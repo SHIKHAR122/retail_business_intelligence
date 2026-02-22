@@ -1,0 +1,18 @@
+# Database Schema – Retail BI Engine
+
+## Table: superstore_clean
+
+Purpose:
+Analytics-ready structured table derived from raw retail dataset.
+
+Key Design Decisions:
+- Snake_case column naming
+- ISO date format (YYYY-MM-DD)
+- REAL datatype for financial metrics
+- INTEGER for quantities and postal codes
+
+Row Count:
+9994 records (validated)
+
+Date Range:
+2014-01-03 to 2017-12-30

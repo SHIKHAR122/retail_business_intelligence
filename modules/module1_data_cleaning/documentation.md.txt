@@ -1,0 +1,24 @@
+# Module 1 – Data Cleaning & Standardization
+
+## Objective
+Transform raw retail dataset into analytics-ready structured database.
+
+## Problems Identified
+- Column names contained spaces
+- Dates stored as TEXT
+- Non-ISO date format (YYYY/MM/DD)
+- Discount stored as INTEGER
+
+## Transformations Applied
+- Renamed original table
+- Created retail_clean transformation table
+- Standardized column naming convention
+- Converted dates to ISO format
+- Cast discount to REAL
+- Validated row count and date range
+
+## Final Output
+- retail_clean table
+- 9994 records
+- ISO date format
+- Clean schema ready for analytics

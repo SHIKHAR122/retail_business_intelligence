@@ -1,0 +1,23 @@
+-- Rename original table
+ALTER TABLE "Sample - Superstore"
+RENAME TO retail;
+
+-- Create cleaned table
+CREATE TABLE retail_clean (
+    ...
+);
+
+-- Insert transformed data
+INSERT INTO retail_clean (...)
+SELECT ...
+FROM retail;
+
+-- Standardize date format
+UPDATE retail_clean
+SET order_date = REPLACE(order_date, '/', '-'),
+    ship_date  = REPLACE(ship_date, '/', '-');
+
+-- Validation Queries
+SELECT COUNT(*) FROM retail_clean;
+SELECT MIN(order_date), MAX(order_date) FROM retail_clean;
+PRAGMA table_info(retail_clean);
