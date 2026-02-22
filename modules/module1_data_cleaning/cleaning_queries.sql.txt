@@ -1,0 +1,55 @@
+-- ==========================================================
+-- Module 1: Data Cleaning for Superstore Project
+-- Author: Shikhar
+-- Purpose: Clean raw sales and customer data for analysis
+-- ==========================================================
+
+-- 1. Remove duplicate rows based on OrderID and ProductID
+DELETE FROM superstore_clean
+WHERE rowid NOT IN (
+    SELECT MIN(rowid)
+    FROM superstore_clean
+    GROUP BY OrderID, ProductID
+);
+
+-- 2. Handle missing numeric values
+-- Set missing sales and quantity to 0
+UPDATE superstore_clean
+SET Sales = 0
+WHERE Sales IS NULL;
+
+UPDATE superstore_clean
+SET Quantity = 0
+WHERE Quantity IS NULL;
+
+-- 3. Handle missing categorical values
+-- Set missing categories and subcategories to 'Unknown'
+UPDATE superstore_clean
+SET Category = 'Unknown'
+WHERE Category IS NULL;
+
+UPDATE superstore_clean
+SET SubCategory = 'Unknown'
+WHERE SubCategory IS NULL;
+
+-- 4. Trim leading and trailing spaces from text columns
+UPDATE superstore_clean
+SET CustomerName = TRIM(CustomerName),
+    ProductName = TRIM(ProductName);
+
+-- 5. Standardize text
+-- Convert Category and SubCategory to uppercase
+UPDATE superstore_clean
+SET Category = UPPER(Category),
+    SubCategory = UPPER(SubCategory);
+
+-- 6. Remove invalid rows
+-- Remove rows with negative sales or quantity
+DELETE FROM superstore_clean
+WHERE Sales < 0 OR Quantity < 0;
+
+-- 7. Create a cleaned working table
+-- This table will be used for further analysis
+CREATE TABLE superstore_cleaned AS
+SELECT *
+FROM superstore_clean;
