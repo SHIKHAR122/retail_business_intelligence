@@ -2,7 +2,7 @@
 -- Clean Analytics Table
 
 CREATE TABLE superstore_clean (
-    row_id INTEGER,
+    row_id INTEGER PRIMARY KEY,
     order_id TEXT,
     order_date TEXT,
     ship_date TEXT,
@@ -24,3 +24,55 @@ CREATE TABLE superstore_clean (
     discount REAL,
     profit REAL
 );
+
+
+
+
+-- INSERTING THE DATA IN THE TABLE superstore_clean USING THE ORIGINAL TABLE superstore
+
+INSERT INTO superstore_clean (
+    row_id,
+    order_id,
+    order_date,
+    ship_date,
+    ship_mode,
+    customer_id,
+    customer_name,
+    segment,
+    country,
+    city,
+    state,
+    postal_code,
+    region,
+    product_id,
+    category,
+    sub_category,
+    product_name,
+    sales,
+    quantity,
+    discount,
+    profit
+)
+SELECT
+    "Row ID",
+    "Order ID",
+    REPLACE("Order Date", '/', '-'),
+    REPLACE("Ship Date", '/', '-'),
+    "Ship Mode",
+    "Customer ID",
+    "Customer Name",
+    "Segment",
+    "Country",
+    "City",
+    "State",
+    "Postal Code",
+    "Region",
+    "Product ID",
+    "Category",
+    "Sub-Category",
+    "Product Name",
+    "Sales",
+    "Quantity",
+    CAST("Discount" AS REAL),
+    "Profit"
+FROM superstore;
