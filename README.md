@@ -18,10 +18,13 @@ It is designed to simulate real-world BI workflows using SQL, with a focus on cr
 
 ---
 
+**Created By - **SHIKHAR SHARMA**
+**Status -  **IN PROGRESS**
+
+
 ## Getting Started
 1. Clone the repository:
 ```bash
 git clone https://github.com/SHIKHAR122/retail_business_intelligence.git
 
-**Created By - **SHIKHAR SHARMA**
-**Status -  **IN PROGRESS**
+
