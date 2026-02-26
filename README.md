@@ -1,5 +1,3 @@
-Here’s an updated version of your README reflecting **Module 2 progress** and keeping it clean and resume-friendly:
-
 ---
 
 # Superstore Project (Retail Business Intelligence)
