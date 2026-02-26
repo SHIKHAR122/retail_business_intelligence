@@ -1,0 +1,157 @@
+-- ==================================================================================
+-- Module 2: Sales Aggregation
+-- Project: SQL Analytical Engine
+-- Description: Turn cleaned data to business level summaries
+-- Author: Shikhar Sharma
+-- ===================================================================================
+
+
+--=======================================================================================
+		-- Sales by Category
+		--GOAL - To Show category-level profitability and dependency risk.
+--=======================================================================================
+
+--Total sales by Category:
+SELECT 
+    category,
+    ROUND(SUM(sales), 2) AS total_sales
+FROM superstore_clean
+GROUP BY category
+ORDER BY total_sales DESC;
+
+
+--Total Profit By Category
+
+   SELECT
+       category,
+       ROUND(SUM(profit),2) AS Total_Profit
+   FROM superstore_clean
+   GROUP BY category
+   ORDER BY Total_Profit DESC;
+
+
+--Profit Margin By Category
+  
+  SELECT 
+    category,
+    SUM(sales) AS total_sales,
+    SUM(profit) AS total_profit,
+    ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS profit_margin_percentage
+FROM superstore_clean
+GROUP BY category
+ORDER BY profit_margin_percentage DESC;
+
+
+
+
+--Revenue Contribution By Category
+    SELECT
+    category,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0 
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution_pct
+FROM sales_data
+GROUP BY category
+ORDER BY revenue_contribution_pct DESC;
+
+
+
+
+--Rank Categories By Revenue
+       WITH category_revenue AS (
+    SELECT 
+        category,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY category
+)
+
+SELECT 
+    category,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS revenue_rank
+FROM category_revenue
+ORDER BY revenue_rank;
+
+
+
+
+--Rank Categories By Revenue
+
+WITH category_profit AS (
+    SELECT
+        category,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY category
+)
+
+SELECT
+    category,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS profit_rank
+FROM category_profit
+ORDER BY profit_rank;
+
+
+
+--Identify High-Sales but Low-Margin Categories
+WITH category_metrics AS (
+    SELECT
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY category
+),
+
+overall_avg AS (
+    SELECT
+        AVG(total_sales) AS avg_sales,
+        AVG(profit_margin) AS avg_margin
+    FROM category_metrics
+)
+
+SELECT
+    c.category,
+    c.total_sales,
+    c.total_profit,
+    ROUND(c.profit_margin, 4) AS profit_margin
+FROM category_metrics c
+CROSS JOIN overall_avg o
+WHERE 
+    c.total_sales > o.avg_sales
+    AND c.profit_margin < o.avg_margin
+ORDER BY c.total_sales DESC;
+
+
+
+
+
+
+--Detect Loss-Making Subcategories
+
+
+WITH subcategory_metrics AS (
+    SELECT
+        sub_category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY sub_category
+)
+
+SELECT
+    sub_category,
+    total_sales,
+    total_profit,
+    ROUND(profit_margin, 4) AS profit_margin,
+    DENSE_RANK() OVER (ORDER BY total_profit ASC) AS loss_rank
+FROM subcategory_metrics
+WHERE total_profit < 0
+ORDER BY total_profit ASC;

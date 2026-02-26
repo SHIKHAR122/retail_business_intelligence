@@ -1,0 +1,107 @@
+
+# Module 2: Sales Aggregation & Profitability Analysis
+
+## 1. Objective
+
+This module focuses on aggregating transactional sales data to generate business-level performance insights. The goal is to analyze revenue distribution, profitability patterns, and identify underperforming segments using structured SQL analysis.
+
+The module transforms row-level transactional data into strategic performance metrics across categories and sub-categories.
+
+---
+
+## 2. Dataset Overview
+
+Source Table: `superstore_clean`
+
+Key Columns Used:
+
+* `category`
+* `sub_category`
+* `sales`
+* `profit`
+* `region`
+* `segment`
+* `order_date`
+
+The dataset contains transactional sales records, which are aggregated to derive category-level and sub-category-level insights.
+
+---
+
+## 3. Completed Analyses
+
+### 3.1 Total Sales by Category
+
+Aggregated total revenue per category to identify primary revenue drivers within the business.
+
+### 3.2 Total Profit by Category
+
+Computed cumulative profit across categories to assess profitability distribution.
+
+### 3.3 Profit Margin by Category
+
+Calculated profit margin (Total Profit ÷ Total Sales) to evaluate operational efficiency across categories.
+
+This enables identification of:
+
+* High-efficiency categories
+* Revenue-heavy but low-margin categories
+
+### 3.4 Revenue Contribution Percentage
+
+Measured each category’s contribution to overall company revenue to determine dependency concentration.
+
+Business Insight:
+Identifies categories that dominate revenue share and highlights over-reliance risks.
+
+### 3.5 Ranking Categories by Revenue
+
+Used window functions to rank categories by total revenue, enabling structured performance comparison.
+
+### 3.6 Ranking Categories by Profit
+
+Ranked categories by total profit to identify the most value-generating business segments.
+
+### 3.7 Loss-Making Sub-Category Detection
+
+Aggregated sub-category performance and identified segments with negative total profit.
+
+This highlights:
+
+* Structural inefficiencies
+* Pricing or cost management issues
+* Potential candidates for strategic review
+
+---
+
+## 4. Analytical Techniques Applied
+
+* GROUP BY Aggregations
+* Common Table Expressions (CTEs)
+* Window Functions (DENSE_RANK)
+* HAVING Clause Filtering
+* Ratio Calculations (Profit Margin)
+* Revenue Contribution Analysis
+* Severity Ranking of Loss Segments
+
+This module demonstrates structured SQL design separating aggregation logic from analytical ranking logic.
+
+---
+
+## 5. Preliminary Business Observations
+
+* Revenue concentration is uneven across categories.
+* Some high-revenue categories exhibit relatively low profit margins.
+* Certain sub-categories operate at net losses despite generating sales volume.
+
+These findings indicate potential pricing inefficiencies and cost structure imbalances.
+
+---
+
+## 6. Next Steps (In Progress)
+
+* Sales Aggregation by Region
+* Sales Aggregation by Segment
+* Monthly Sales Trend Analysis
+* Time-Based Profitability Trends
+* Regional Margin Comparison
+* Cross-Dimensional Performance Evaluation
