@@ -1,40 +1,91 @@
+
 ---
 
 # Superstore Project (Retail Business Intelligence)
 
 ## Project Overview
 
-This project is a **Retail Business Intelligence system** that processes, cleans, and analyzes sales and customer data.
-It is designed to simulate real-world BI workflows using SQL, with a focus on creating reusable, well-documented modules.
+This project is a **Retail Business Intelligence system** that processes, cleans, and analyzes retail sales data using structured SQL workflows.
+
+The objective is to simulate real-world BI development by transforming raw transactional data into business-level performance insights through modular design and clear documentation.
 
 ---
 
 ## Current Progress
 
-* **Module Completed:** `module1_data_cleaning`
+### ✅ Module Completed: `module1_data_cleaning`
 
-  * SQL scripts to clean and standardize raw sales data.
-  * Documentation explains queries and steps taken.
+* Cleaned and standardized raw transactional data
+* Handled missing values and formatting inconsistencies
+* Structured dataset for analytical processing
 
-* **Module In Progress:** `module2_sales_aggregate` ✅
+---
 
-  * Aggregate sales data by **region, category, and segment**.
-  * Generate **monthly sales summaries**.
-  * Calculate **total revenue, profit, profit margin, and revenue contribution percentages**.
-  * Identify **high-sales but low-margin categories**.
-  * Detect **loss-making sub-categories**.
-  * Documentation explains query logic, methodology, and outputs.
+### ✅ Module Completed: `module2_sales_aggregate`
 
-* **Next Steps:**
+This module focuses on revenue distribution, profitability evaluation, and performance benchmarking.
 
-  * Complete remaining aggregation modules (sales by segment, region, monthly summaries).
-  * Build dashboards and visualizations.
-  * Refine structure and documentation for future modules.
+#### Category-Level Analysis
+
+* Total Sales by Category
+* Total Profit by Category
+* Profit Margin Calculation
+* Revenue Contribution Percentage
+* Ranking by Revenue and Profit
+* Detection of High-Sales but Low-Margin Categories
+* Loss-Making Sub-Category Identification
+
+#### Regional Analysis
+
+* Total Sales and Profit by Region
+* Profit Margin by Region
+* Identification of Highest and Lowest Performing Regions
+* Sales vs Profit Mismatch Detection
+* Regional Performance Classification (Risk / Opportunity Zones)
+
+#### Core Metrics Generated
+
+* Total Revenue
+* Total Profit
+* Profit Margin
+* Revenue Share
+* Performance Rankings
+
+---
+
+## Analytical Techniques Used
+
+* GROUP BY Aggregations
+* Common Table Expressions (CTEs)
+* Window Functions (DENSE_RANK)
+* Conditional Logic (CASE)
+* Ratio & Contribution Calculations
+* Comparative Benchmarking (Average vs Aggregated Metrics)
+
+---
+
+## Business Insights Developed
+
+* Revenue concentration varies significantly across categories.
+* High-revenue segments are not always high-margin segments.
+* Certain sub-categories operate at structural losses.
+* Regional performance differs in both volume and profitability.
+* Revenue-only evaluation can lead to misleading conclusions.
+
+---
+
+## Next Development Phase
+
+* Sales Aggregation by Segment
+* Monthly Sales Trend Analysis
+* Time-Based Profitability Trends
+* Cross-Dimensional Analysis (Region × Category × Segment)
+* Dashboard & Visualization Layer
 
 ---
 
 **Created By:** SHIKHAR SHARMA
-**Status:** IN PROGRESS
+**Project Status:** Module 1 & Module 2 Completed | Expanding Analytical Layers
 
 ---
 
@@ -46,10 +97,11 @@ It is designed to simulate real-world BI workflows using SQL, with a focus on cr
 git clone https://github.com/SHIKHAR122/retail_business_intelligence.git
 ```
 
-2. Navigate to the modules folder and execute SQL scripts sequentially.
+2. Navigate to the modules folder and execute SQL scripts sequentially:
 
-   * Start with `module1_data_cleaning`
-   * Then run `module2_sales_aggregate`
-3. Review documentation files for each module to understand queries, logic, and outputs.
+   * `module1_data_cleaning`
+   * `module2_sales_aggregate`
+
+3. Review documentation files for methodology, logic explanations, and output structure.
 
 ---
