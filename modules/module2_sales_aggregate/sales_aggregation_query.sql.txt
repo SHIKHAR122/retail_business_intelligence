@@ -53,7 +53,7 @@ ORDER BY profit_margin_percentage DESC;
         / SUM(SUM(sales)) OVER (),
         2
     ) AS revenue_contribution_pct
-FROM sales_data
+FROM superstore_clean
 GROUP BY category
 ORDER BY revenue_contribution_pct DESC;
 
@@ -155,3 +155,186 @@ SELECT
 FROM subcategory_metrics
 WHERE total_profit < 0
 ORDER BY total_profit ASC;
+
+
+
+
+--====================================================================================================
+			--Sales By Region
+			--GOAL-  Show regional performance intelligence.
+--====================================================================================================
+
+
+
+
+--Total Sales By Region
+
+
+SELECT
+	region,
+	SUM(sales) AS regional_sales
+FROM superstore_clean
+GROUP BY region
+ORDER BY regional_sales DESC;
+
+
+
+
+--Total Profit By region
+
+
+SELECT
+	region,
+	SUM(profit) AS regional_profit
+FROM superstore_clean
+GROUP BY region
+ORDER BY regional_profit DESC;
+
+
+
+
+--Profit Margin By Region
+
+SELECT
+	region,
+	SUM(profit) AS regional_profit,
+	SUM(sales) AS regional_sales,
+	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  regional_profit_margin
+FROM superstore_clean
+GROUP BY region
+ORDER BY regional_profit_margin DESC;
+
+
+
+
+--Revenue Contribution BY Region
+
+    SELECT
+    region,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0 
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution
+FROM superstore_clean
+GROUP BY region
+ORDER BY revenue_contribution DESC;
+
+
+
+
+--Rank Regions By Sales
+
+
+WITH sales_revenue AS (
+    SELECT 
+        region,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY region
+)
+
+SELECT 
+    region,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS region_rank
+FROM sales_revenue
+ORDER BY region_rank;
+
+
+
+
+
+
+--Rank Regions By Profit
+
+
+WITH profit_revenue AS (
+    SELECT 
+        region,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY region
+)
+
+SELECT 
+    region,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS region_rank
+FROM profit_revenue
+ORDER BY region_rank;
+
+
+
+
+--Identify Highest & Lowest Performing Regions
+  
+
+WITH regional_sales AS (
+    SELECT 
+        region,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY region
+)
+
+SELECT 
+    region,
+    total_sales,
+    CASE 
+        WHEN total_sales = (SELECT MAX(total_sales) FROM regional_sales)
+            THEN 'Highest Performer'
+        WHEN total_sales = (SELECT MIN(total_sales) FROM regional_sales)
+            THEN 'Lowest Performer'
+        ELSE 'Other'
+    END AS performance_label
+FROM regional_sales
+ORDER BY total_sales DESC;
+
+
+
+
+--Comparison between  Sales vs Profit (to detect mismatch cases)
+
+
+WITH category_summary AS (
+    SELECT 
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY category
+),
+overall_avg AS (
+    SELECT 
+        AVG(total_sales) AS avg_sales,
+        AVG(profit_margin) AS avg_margin
+    FROM category_summary
+)
+
+SELECT 
+    c.category,
+    c.total_sales,
+    c.total_profit,
+    c.profit_margin,
+    CASE 
+        WHEN c.total_sales > o.avg_sales 
+             AND c.profit_margin < o.avg_margin
+            THEN 'High Sales - Low Margin (Risk)'
+        WHEN c.total_sales < o.avg_sales 
+             AND c.profit_margin > o.avg_margin
+            THEN 'Low Sales - High Margin (Opportunity)'
+        ELSE 'Normal'
+    END AS performance_type
+FROM category_summary c, overall_avg o
+ORDER BY c.total_sales DESC;
+
+
+
+
+
+
+
+

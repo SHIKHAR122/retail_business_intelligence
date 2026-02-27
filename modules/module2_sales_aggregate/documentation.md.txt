@@ -97,11 +97,128 @@ These findings indicate potential pricing inefficiencies and cost structure imba
 
 ---
 
-## 6. Next Steps (In Progress)
 
-* Sales Aggregation by Region
-* Sales Aggregation by Segment
-* Monthly Sales Trend Analysis
-* Time-Based Profitability Trends
-* Regional Margin Comparison
-* Cross-Dimensional Performance Evaluation
+---
+
+# 6. Sales Aggregation by Region
+
+## 6.1 Objective
+
+To evaluate geographic revenue distribution and assess regional business performance using aggregated sales and profit metrics.
+
+The goal is to move beyond raw revenue comparison and incorporate profitability awareness into regional evaluation.
+
+---
+
+## 6.2 Regional Sales Aggregation
+
+Transactional records were aggregated at the region level to compute:
+
+* Total Sales per Region
+* Total Profit per Region
+* Profit Margin per Region
+
+This transformation converts row-level sales data into region-level performance summaries suitable for strategic comparison.
+
+---
+
+## 6.3 Highest and Lowest Performing Regions
+
+Regions were compared based on total sales to identify:
+
+* Highest-performing region (maximum total revenue)
+* Lowest-performing region (minimum total revenue)
+
+Tie scenarios were handled by comparing against global maximum and minimum aggregated values to ensure accurate classification.
+
+This approach avoids bias introduced by simple row ordering and ensures analytical consistency.
+
+---
+
+## 6.4 Sales vs Profit Mismatch Detection
+
+Regional performance was evaluated using both revenue and profitability metrics.
+
+Mismatch conditions identified:
+
+* High Sales + Low Profit Margin
+  → Indicates possible pricing inefficiencies, discount pressure, or elevated cost structures.
+
+* Low Sales + High Profit Margin
+  → Indicates niche profitability or under-leveraged growth potential.
+
+This dual-metric evaluation prevents misleading conclusions based solely on revenue magnitude.
+
+---
+
+## 6.5 Regional Performance Labeling
+
+Regions were categorized into performance types using conditional classification logic:
+
+* Highest Performer
+* Lowest Performer
+* High Sales – Low Margin (Risk Zone)
+* Low Sales – High Margin (Opportunity Zone)
+* Normal Performance
+
+This structured labeling enables easier downstream reporting and dashboard visualization.
+
+---
+
+# 7. Analytical Design Principles Applied
+
+This module follows a layered SQL design:
+
+1. Base Aggregation Layer
+   → Summarizes transactional data into region-level and category-level metrics.
+
+2. Metric Computation Layer
+   → Calculates derived indicators such as profit margin and revenue contribution.
+
+3. Comparative Layer
+   → Applies ranking, min/max comparison, and average benchmarking.
+
+4. Classification Layer
+   → Labels performance categories for strategic interpretation.
+
+This modular structure ensures scalability and supports future analytical expansion.
+
+---
+
+# 8. Business Interpretation – Regional Analysis
+
+Key strategic implications from regional aggregation:
+
+* Revenue distribution is not necessarily aligned with profitability distribution.
+* A high-revenue region may operate with thin margins, indicating operational inefficiency.
+* Lower-revenue regions with strong margins may represent expansion opportunities.
+* Performance evaluation must incorporate both volume and efficiency metrics.
+
+This reinforces the importance of multi-metric evaluation in business intelligence workflows.
+
+---
+
+# 9. Module Completion Status
+
+Completed:
+
+* Category-Level Aggregation
+* Profitability Metrics
+* Revenue Contribution Analysis
+* Ranking by Revenue and Profit
+* Loss-Making Sub-Category Detection
+* Regional Sales & Profit Aggregation
+* Regional Performance Classification
+
+Pending (Next Analytical Layer):
+
+* Segment-Based Aggregation
+* Time-Series Trend Analysis
+* Monthly Revenue & Profit Trends
+* Cross-Dimensional Analysis (Region × Category × Segment)
+
+---
+
+This finalizes the Regional Sales Aggregation component of Module 2.
+
+---
