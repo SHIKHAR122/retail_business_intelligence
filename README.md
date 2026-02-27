@@ -1,7 +1,7 @@
 
 ---
 
-# Superstore Project (Retail Business Intelligence)
+#  Retail Business Intelligence (Retail BI)
 
 ## Project Overview
 
