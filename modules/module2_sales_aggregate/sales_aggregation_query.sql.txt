@@ -336,5 +336,134 @@ ORDER BY c.total_sales DESC;
 
 
 
+--======================================================================================================
+					--Sales By Segment
+					--Goal - Show customer segmentation intelligence
+
+--======================================================================================================
+
+
+--Total Sales by Segment
+
+
+SELECT 
+    segment,
+    ROUND(SUM(sales), 2) AS total_sales
+FROM superstore_clean
+GROUP BY segment
+ORDER BY total_sales DESC;
+
+
+
+
+
+
+--Total Profit By Segment
+
+SELECT 
+    segment,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM superstore_clean
+GROUP BY segment
+ORDER BY total_profit DESC;
+
+
+
+
+--Profit Margin by Segment
+
+SELECT
+	segment,
+	SUM(profit) AS total_profit,
+	SUM(sales) AS total_sales,
+	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  profit_margin
+FROM superstore_clean
+GROUP BY segment
+ORDER BY profit_margin DESC;
+
+
+
+
+
+
+
+--Revenue Contribution By Segment
+
+ SELECT
+    segment,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0 
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution
+FROM superstore_clean
+GROUP BY segment
+ORDER BY revenue_contribution DESC;
+
+
+
+
+
+--Average Order Value by Segment
+
+
+ SELECT 
+    Segment,
+    SUM(Sales) AS Total_Sales,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    SUM(Sales) / COUNT(DISTINCT Order_ID) AS Avg_Order_Value
+FROM superstore_clean
+GROUP BY Segment
+ORDER BY Avg_Order_Value DESC;
+
+
+
+
+
+
+--Rank Segments by Profitability
+
+WITH profit_revenue AS (
+    SELECT 
+        segment,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY segment 
+)
+
+SELECT 
+    segment,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS segment_rank
+FROM profit_revenue
+ORDER BY segment_rank;
+
+
+
+
+
+--Rank Segments by Revenue
+
+WITH total_revenue AS (
+    SELECT 
+        segment,
+        SUM(sales) AS total_sales		
+    FROM superstore_clean
+    GROUP BY segment 
+)
+SELECT 
+    segment,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS segment_rank
+FROM total_revenue
+ORDER BY segment_rank;
+
+
+
+
+
+
+
 
 

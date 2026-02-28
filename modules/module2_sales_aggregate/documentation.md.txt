@@ -1,37 +1,52 @@
+Perfect. This is how updates should be done — structured and incremental.
+
+Below is your **updated Module 2 documentation** with the Segment Analysis section fully integrated and status updated properly.
+
+You can replace your current `documentation.md` with this version.
+
+---
 
 # Module 2: Sales Aggregation & Profitability Analysis
+
+---
 
 ## 1. Objective
 
 This module focuses on aggregating transactional sales data to generate business-level performance insights. The goal is to analyze revenue distribution, profitability patterns, and identify underperforming segments using structured SQL analysis.
 
-The module transforms row-level transactional data into strategic performance metrics across categories and sub-categories.
+The module transforms row-level transactional data into strategic performance metrics across:
+
+* Category
+* Sub-Category
+* Region
+* Segment
 
 ---
 
 ## 2. Dataset Overview
 
-Source Table: `superstore_clean`
+**Source Table:** `superstore_clean`
 
-Key Columns Used:
+### Key Columns Used:
 
 * `category`
 * `sub_category`
-* `sales`
-* `profit`
 * `region`
 * `segment`
+* `sales`
+* `profit`
+* `order_id`
 * `order_date`
 
-The dataset contains transactional sales records, which are aggregated to derive category-level and sub-category-level insights.
+The dataset contains transactional sales records, which are aggregated to derive multi-level business insights.
 
 ---
 
-## 3. Completed Analyses
+# 3. Category-Level Aggregation
 
 ### 3.1 Total Sales by Category
 
-Aggregated total revenue per category to identify primary revenue drivers within the business.
+Aggregated total revenue per category to identify primary revenue drivers.
 
 ### 3.2 Total Profit by Category
 
@@ -39,168 +54,176 @@ Computed cumulative profit across categories to assess profitability distributio
 
 ### 3.3 Profit Margin by Category
 
-Calculated profit margin (Total Profit ÷ Total Sales) to evaluate operational efficiency across categories.
+Calculated:
 
-This enables identification of:
+Profit Margin = Total Profit ÷ Total Sales
 
-* High-efficiency categories
-* Revenue-heavy but low-margin categories
+Used to evaluate operational efficiency.
 
 ### 3.4 Revenue Contribution Percentage
 
-Measured each category’s contribution to overall company revenue to determine dependency concentration.
-
-Business Insight:
-Identifies categories that dominate revenue share and highlights over-reliance risks.
+Measured each category’s contribution to overall revenue.
 
 ### 3.5 Ranking Categories by Revenue
 
-Used window functions to rank categories by total revenue, enabling structured performance comparison.
+Used window functions (`DENSE_RANK`) for structured comparison.
 
 ### 3.6 Ranking Categories by Profit
 
-Ranked categories by total profit to identify the most value-generating business segments.
+Ranked categories by total profit to identify value-generating units.
 
 ### 3.7 Loss-Making Sub-Category Detection
 
-Aggregated sub-category performance and identified segments with negative total profit.
-
-This highlights:
-
-* Structural inefficiencies
-* Pricing or cost management issues
-* Potential candidates for strategic review
+Identified sub-categories with negative total profit to highlight structural inefficiencies.
 
 ---
 
-## 4. Analytical Techniques Applied
+# 4. Regional Sales Aggregation
 
-* GROUP BY Aggregations
-* Common Table Expressions (CTEs)
-* Window Functions (DENSE_RANK)
-* HAVING Clause Filtering
-* Ratio Calculations (Profit Margin)
-* Revenue Contribution Analysis
-* Severity Ranking of Loss Segments
+## 4.1 Objective
 
-This module demonstrates structured SQL design separating aggregation logic from analytical ranking logic.
+Evaluate geographic revenue distribution and assess regional performance using both revenue and profitability metrics.
 
 ---
 
-## 5. Preliminary Business Observations
-
-* Revenue concentration is uneven across categories.
-* Some high-revenue categories exhibit relatively low profit margins.
-* Certain sub-categories operate at net losses despite generating sales volume.
-
-These findings indicate potential pricing inefficiencies and cost structure imbalances.
-
----
-
-
----
-
-# 6. Sales Aggregation by Region
-
-## 6.1 Objective
-
-To evaluate geographic revenue distribution and assess regional business performance using aggregated sales and profit metrics.
-
-The goal is to move beyond raw revenue comparison and incorporate profitability awareness into regional evaluation.
-
----
-
-## 6.2 Regional Sales Aggregation
-
-Transactional records were aggregated at the region level to compute:
+## 4.2 Regional Metrics Computed
 
 * Total Sales per Region
 * Total Profit per Region
 * Profit Margin per Region
 
-This transformation converts row-level sales data into region-level performance summaries suitable for strategic comparison.
+---
+
+## 4.3 Highest and Lowest Performing Regions
+
+Regions were classified using aggregated maximum and minimum comparisons to avoid simple row-order bias.
 
 ---
 
-## 6.3 Highest and Lowest Performing Regions
+## 4.4 Sales vs Profit Mismatch Detection
 
-Regions were compared based on total sales to identify:
+Identified:
 
-* Highest-performing region (maximum total revenue)
-* Lowest-performing region (minimum total revenue)
-
-Tie scenarios were handled by comparing against global maximum and minimum aggregated values to ensure accurate classification.
-
-This approach avoids bias introduced by simple row ordering and ensures analytical consistency.
+* High Sales + Low Margin (Risk Zone)
+* Low Sales + High Margin (Opportunity Zone)
 
 ---
 
-## 6.4 Sales vs Profit Mismatch Detection
+## 4.5 Regional Performance Labeling
 
-Regional performance was evaluated using both revenue and profitability metrics.
-
-Mismatch conditions identified:
-
-* High Sales + Low Profit Margin
-  → Indicates possible pricing inefficiencies, discount pressure, or elevated cost structures.
-
-* Low Sales + High Profit Margin
-  → Indicates niche profitability or under-leveraged growth potential.
-
-This dual-metric evaluation prevents misleading conclusions based solely on revenue magnitude.
-
----
-
-## 6.5 Regional Performance Labeling
-
-Regions were categorized into performance types using conditional classification logic:
+Regions categorized into:
 
 * Highest Performer
 * Lowest Performer
-* High Sales – Low Margin (Risk Zone)
-* Low Sales – High Margin (Opportunity Zone)
+* Risk Zone
+* Opportunity Zone
 * Normal Performance
 
-This structured labeling enables easier downstream reporting and dashboard visualization.
+---
+
+# 5. Segment-Based Sales & Profitability Analysis (NEW)
+
+## 5.1 Objective
+
+Analyze customer segments to determine revenue concentration, profitability efficiency, and value contribution across customer types.
 
 ---
 
-# 7. Analytical Design Principles Applied
+## 5.2 Segment Metrics Computed
 
-This module follows a layered SQL design:
+### 5.2.1 Total Sales by Segment
 
-1. Base Aggregation Layer
-   → Summarizes transactional data into region-level and category-level metrics.
+Aggregated total revenue per segment to determine primary revenue contributors.
 
-2. Metric Computation Layer
-   → Calculates derived indicators such as profit margin and revenue contribution.
+### 5.2.2 Total Profit by Segment
 
-3. Comparative Layer
-   → Applies ranking, min/max comparison, and average benchmarking.
+Calculated cumulative profit generated by each segment.
 
-4. Classification Layer
-   → Labels performance categories for strategic interpretation.
+### 5.2.3 Profit Margin by Segment
 
-This modular structure ensures scalability and supports future analytical expansion.
+Computed profit margin per segment to assess efficiency:
 
----
+Profit Margin = Total Profit ÷ Total Sales
 
-# 8. Business Interpretation – Regional Analysis
+This distinguishes:
 
-Key strategic implications from regional aggregation:
-
-* Revenue distribution is not necessarily aligned with profitability distribution.
-* A high-revenue region may operate with thin margins, indicating operational inefficiency.
-* Lower-revenue regions with strong margins may represent expansion opportunities.
-* Performance evaluation must incorporate both volume and efficiency metrics.
-
-This reinforces the importance of multi-metric evaluation in business intelligence workflows.
+* Revenue-heavy but low-margin segments
+* Smaller but high-efficiency segments
 
 ---
 
-# 9. Module Completion Status
+## 5.2.4 Revenue Contribution % by Segment
 
-Completed:
+Measured each segment’s percentage contribution to overall company revenue.
+
+This reveals dependency concentration and revenue distribution imbalance.
+
+---
+
+## 5.2.5 Average Order Value (AOV) by Segment
+
+Calculated:
+
+Average Order Value = Total Sales ÷ Total Orders
+
+This metric evaluates purchasing intensity and transactional behavior across segments.
+
+---
+
+## 5.2.6 Ranking Segments by Revenue
+
+Used window functions (`DENSE_RANK`) to rank segments based on total sales.
+
+This enables structured comparative analysis instead of raw value inspection.
+
+---
+
+## 5.2.7 Ranking Segments by Profitability
+
+Segments ranked based on total profit generated.
+
+This ensures performance evaluation considers value generation, not just sales volume.
+
+---
+
+# 6. Analytical Techniques Applied
+
+* GROUP BY Aggregations
+* Common Table Expressions (CTEs)
+* Window Functions (`DENSE_RANK`)
+* HAVING Clause Filtering
+* Ratio Calculations (Profit Margin)
+* Revenue Contribution Analysis
+* Order-Based Aggregation for AOV
+* Multi-Metric Comparative Evaluation
+* Conditional Performance Labeling
+
+This module demonstrates layered SQL design separating:
+
+1. Aggregation Logic
+2. Metric Computation
+3. Ranking & Comparison
+4. Classification & Interpretation
+
+---
+
+# 7. Business Observations (Consolidated)
+
+From category, region, and segment analyses:
+
+* Revenue concentration is uneven across business dimensions.
+* High revenue does not guarantee high profitability.
+* Some segments generate large volumes but operate with thinner margins.
+* Certain regions show operational inefficiencies despite strong sales.
+* Customer segments vary significantly in average order value.
+
+These findings reinforce the need for multi-metric evaluation rather than single-metric judgment.
+
+---
+
+# 8. Module Completion Status
+
+## Completed:
 
 * Category-Level Aggregation
 * Profitability Metrics
@@ -209,16 +232,34 @@ Completed:
 * Loss-Making Sub-Category Detection
 * Regional Sales & Profit Aggregation
 * Regional Performance Classification
+* Segment-Based Sales Aggregation
+* Segment Profitability Analysis
+* Revenue Contribution by Segment
+* Average Order Value by Segment
+* Ranking Segments by Revenue
+* Ranking Segments by Profit
 
-Pending (Next Analytical Layer):
+---
 
-* Segment-Based Aggregation
+## Pending (Next Analytical Layer)
+
+* Compare Growth Across Segments (Time-Based Analysis)
 * Time-Series Trend Analysis
 * Monthly Revenue & Profit Trends
 * Cross-Dimensional Analysis (Region × Category × Segment)
 
 ---
 
-This finalizes the Regional Sales Aggregation component of Module 2.
+# 9. Design Philosophy
+
+This module follows a layered SQL architecture:
+
+1. Base Aggregation Layer
+2. Derived Metric Layer
+3. Comparative Ranking Layer
+4. Classification & Interpretation Layer
+
+This structure ensures scalability and supports future analytical expansion.
 
 ---
+
