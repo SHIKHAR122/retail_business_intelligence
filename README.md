@@ -1,4 +1,3 @@
-
 # 📊 Retail Business Intelligence (Retail BI)
 
 ## Project Overview
@@ -7,7 +6,7 @@ This project is a structured **Retail Business Intelligence system** built using
 
 The objective is to simulate real-world BI development by progressing from:
 
-Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking
+Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series Evaluation
 
 All analysis is modular, documented, and designed to reflect practical BI workflows.
 
@@ -19,7 +18,8 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 2️⃣ Revenue & Profit Aggregation
 3️⃣ Segment & Time-Based Growth Analysis
 4️⃣ Business Insight Extraction
-5️⃣ (Upcoming) Dashboard Layer
+5️⃣ Monthly & Trend Analysis (In Progress)
+6️⃣ (Upcoming) Dashboard Layer
 
 ---
 
@@ -36,7 +36,7 @@ Result: Clean, analysis-ready dataset.
 
 ## ✅ Module 2: Sales, Profit & Growth Analysis (`module2_sales_aggregate`)
 
-This module expands beyond simple aggregation into profitability benchmarking and time-based growth evaluation.
+This module expands beyond simple aggregation into profitability benchmarking, segment intelligence, and time-based performance evaluation.
 
 ---
 
@@ -62,16 +62,39 @@ This module expands beyond simple aggregation into profitability benchmarking an
 
 ---
 
-### 🔹 Segment-Level Growth Analysis
+### 🔹 Segment-Level Performance & Growth Analysis (Completed)
 
-Time-based performance evaluation using Order Date.
+Time-based and structural evaluation using Order Date.
 
+* Total Sales by Segment
+* Total Profit by Segment
+* Profit Margin by Segment
+* Revenue Contribution % by Segment
+* Average Order Value (AOV) by Segment
+* Segment Ranking by Revenue
+* Segment Ranking by Profitability
 * Annual Sales by Segment
 * Annual Profit by Segment
 * Year-over-Year (YoY) Sales Growth %
 * Year-over-Year Profit Growth %
 * Overall Multi-Year Growth (Start vs End Comparison)
 * Compound Annual Growth Rate (CAGR) per Segment
+
+This phase establishes customer-segmentation intelligence and profitability benchmarking.
+
+---
+
+### 🔹 Monthly Sales Summary (In Progress)
+
+Currently building time-series intelligence at a monthly level:
+
+* Monthly Sales Aggregation
+* Monthly Profit Aggregation
+* Month-over-Month (MoM) Growth %
+* Revenue Seasonality Detection
+* Monthly Performance Trends by Segment
+
+This phase introduces momentum tracking and prepares the dataset for dashboard visualization.
 
 ---
 
@@ -82,7 +105,8 @@ Time-based performance evaluation using Order Date.
 * Profit Margin
 * Revenue Share
 * Performance Rankings
-* Growth Rates (YoY & CAGR)
+* Growth Rates (YoY, CAGR, MoM)
+* Average Order Value (AOV)
 
 ---
 
@@ -91,9 +115,9 @@ Time-based performance evaluation using Order Date.
 * GROUP BY Aggregations
 * Common Table Expressions (CTEs)
 * Window Functions (DENSE_RANK, LAG)
-* Time-Based Functions (Year Extraction)
+* Time-Based Functions (Year & Month Extraction)
 * Ratio & Contribution Calculations
-* Growth Rate Computations (YoY, CAGR)
+* Growth Rate Computations (YoY, CAGR, MoM)
 * Conditional Logic (CASE)
 * Comparative Benchmarking
 
@@ -107,12 +131,13 @@ Time-based performance evaluation using Order Date.
 * Regional profitability differs from revenue scale.
 * Segment growth rates differ despite similar revenue sizes.
 * Revenue growth does not always translate into proportional profit growth.
+* Monthly patterns reveal uneven performance momentum across segments.
 
 ---
 
 ## Upcoming Development Phase
 
-* Monthly Trend & Momentum Analysis
+* Complete Monthly Growth & Momentum Benchmarking
 * Margin Trend Over Time
 * Cross-Dimensional Analysis (Region × Segment × Category)
 * Executive KPI Dashboard Layer
@@ -142,8 +167,10 @@ Execute in order:
 
 ## Project Status
 
-Module 1 & Module 2 Completed
-Currently expanding analytical depth and time-series evaluation.
+Module 1 Completed
+Module 2 – Sales, Profit & Segment Analysis Completed
+Monthly Sales Summary – In Progress
+
+Currently expanding analytical depth into time-series and momentum evaluation.
 
 ---
-
