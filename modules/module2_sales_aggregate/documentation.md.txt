@@ -259,7 +259,83 @@ This module follows a layered SQL architecture:
 3. Comparative Ranking Layer
 4. Classification & Interpretation Layer
 
-This structure ensures scalability and supports future analytical expansion.
+---
+
+# 10. Current Development Update
+
+## 10.1 Status Update
+
+Segment-Level Sales & Profitability Analysis has been completed.
+
+The next analytical layer now focuses on **Monthly Sales Summary** to introduce time-based performance evaluation.
+
+---
+
+# 11. Monthly Sales Summary (In Progress)
+
+## 11.1 Objective
+
+The goal of this phase is to demonstrate **time-series and trend analysis capabilities** by moving beyond static aggregations and incorporating temporal dynamics.
+
+Unlike yearly aggregation, monthly analysis enables:
+
+* Detection of short-term fluctuations
+* Identification of seasonality patterns
+* Momentum tracking
+* Volatility assessment
+* Early performance shifts
+
+This transition marks the shift from structural analysis to temporal performance evaluation.
+
+---
+
+## 11.2 Analytical Purpose
+
+Monthly aggregation allows deeper business insight into:
+
+* Revenue acceleration or deceleration
+* Peak sales periods
+* Consistency vs instability
+* Cyclical demand behavior
+
+This enhances the analytical depth of Module 2 by introducing trend-oriented evaluation.
+
+---
+
+## 11.3 Planned Metrics
+
+The Monthly Sales Summary will compute:
+
+* Monthly Total Sales (Company-Level)
+* Monthly Sales by Segment
+* Month-over-Month (MoM) Growth %
+* Monthly Profit Trends
+* Monthly Profit Margin Trends
+* Sales Momentum Classification
+
+---
+
+## 11.4 Analytical Techniques to Be Applied
+
+* Date Extraction (Year–Month)
+* GROUP BY Time Aggregation
+* Window Functions (`LAG`) for MoM Analysis
+* Growth Rate Calculations
+* Volatility Identification
+* Trend Interpretation
+
+---
+
+# 12. Module 2 Evolution
+
+Module 2 is evolving from:
+
+Descriptive Aggregation
+→ Profitability Evaluation
+→ Comparative Ranking
+→ Temporal Performance Analysis
+
+This progression reflects increasing analytical complexity and business maturity.
 
 ---
 

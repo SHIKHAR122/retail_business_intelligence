@@ -464,6 +464,140 @@ ORDER BY segment_rank;
 
 
 
+--Comparison Of  Growth Across Segments
+
+
+WITH annual_metrics AS (
+    SELECT
+        segment,
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales)  AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY
+        segment,
+        strftime('%Y', order_date)
+),
+
+bounds AS (
+    SELECT
+        segment,
+        order_year,
+        total_sales,
+        total_profit,
+
+        FIRST_VALUE(total_sales) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+        ) AS first_sales,
+
+        LAST_VALUE(total_sales) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS last_sales,
+
+        FIRST_VALUE(total_profit) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+        ) AS first_profit,
+
+        LAST_VALUE(total_profit) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS last_profit
+
+    FROM annual_metrics
+)
+
+SELECT DISTINCT
+    segment,
+
+    first_sales,
+    last_sales,
+
+    ROUND((last_sales - first_sales) * 1.0 / first_sales * 100, 2)
+        AS overall_sales_growth_pct,
+
+    ROUND((POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) * 100, 2)
+        AS sales_cagr_pct,
+
+    first_profit,
+    last_profit,
+
+    ROUND((last_profit - first_profit) * 1.0 / first_profit * 100, 2)
+        AS overall_profit_growth_pct,
+
+    ROUND((POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1) * 100, 2)
+        AS profit_cagr_pct,
+
+    ROUND(
+        (POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) -
+        (POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1),
+        4
+    ) AS growth_gap_cagr
+
+FROM bounds
+ORDER BY segment;
+
+
+
+
+
+
+--=========================================================================================
+				Monthly Sales Summary
+				Goal- Demonstrate time-series and trend analysis skills.
+ 
+--=========================================================================================
+
+
+
+
+
+--Monthly Sales 
+
+
+SELECT
+    strftime('%Y', order_date) AS order_year,
+    strftime('%m', order_date) AS order_month,
+    SUM(sales) AS monthly_sales
+FROM superstore_clean
+GROUP BY
+    strftime('%Y', order_date),
+    strftime('%m', order_date)
+ORDER BY
+    order_year,
+    order_month;
+
+
+
+
+--Monthly profit
+
+
+SELECT
+    strftime('%Y', order_date) AS order_year,
+    strftime('%m', order_date) AS order_month,
+    SUM(profit) AS monthly_profit
+FROM superstore_clean
+GROUP BY
+    strftime('%Y', order_date),
+    strftime('%m', order_date)
+ORDER BY
+    order_year,
+    order_month;
+
+
+
+
+
+
+
+
+
+
 
 
 
