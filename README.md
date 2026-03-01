@@ -1,55 +1,88 @@
 
----
-
-#  Retail Business Intelligence (Retail BI)
+# 📊 Retail Business Intelligence (Retail BI)
 
 ## Project Overview
 
-This project is a **Retail Business Intelligence system** that processes, cleans, and analyzes retail sales data using structured SQL workflows.
+This project is a structured **Retail Business Intelligence system** built using SQL to transform raw transactional data into layered business insights.
 
-The objective is to simulate real-world BI development by transforming raw transactional data into business-level performance insights through modular design and clear documentation.
+The objective is to simulate real-world BI development by progressing from:
 
----
+Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking
 
-## Current Progress
-
-### ✅ Module Completed: `module1_data_cleaning`
-
-* Cleaned and standardized raw transactional data
-* Handled missing values and formatting inconsistencies
-* Structured dataset for analytical processing
+All analysis is modular, documented, and designed to reflect practical BI workflows.
 
 ---
 
-### ✅ Module Completed: `module2_sales_aggregate`
+## Project Structure
 
-This module focuses on revenue distribution, profitability evaluation, and performance benchmarking.
+1️⃣ Data Preparation
+2️⃣ Revenue & Profit Aggregation
+3️⃣ Segment & Time-Based Growth Analysis
+4️⃣ Business Insight Extraction
+5️⃣ (Upcoming) Dashboard Layer
 
-#### Category-Level Analysis
+---
+
+## ✅ Module 1: Data Cleaning (`module1_data_cleaning`)
+
+* Standardized raw transactional data
+* Resolved missing and inconsistent values
+* Structured dataset for downstream analysis
+* Validated revenue and profit fields
+
+Result: Clean, analysis-ready dataset.
+
+---
+
+## ✅ Module 2: Sales, Profit & Growth Analysis (`module2_sales_aggregate`)
+
+This module expands beyond simple aggregation into profitability benchmarking and time-based growth evaluation.
+
+---
+
+### 🔹 Category-Level Analysis
 
 * Total Sales by Category
 * Total Profit by Category
 * Profit Margin Calculation
-* Revenue Contribution Percentage
-* Ranking by Revenue and Profit
-* Detection of High-Sales but Low-Margin Categories
+* Revenue Contribution %
+* Revenue & Profit Ranking
+* Detection of High-Sales / Low-Margin Categories
 * Loss-Making Sub-Category Identification
 
-#### Regional Analysis
+---
 
-* Total Sales and Profit by Region
+### 🔹 Regional Performance Analysis
+
+* Total Sales & Profit by Region
 * Profit Margin by Region
-* Identification of Highest and Lowest Performing Regions
-* Sales vs Profit Mismatch Detection
-* Regional Performance Classification (Risk / Opportunity Zones)
+* Highest vs Lowest Performing Regions
+* Sales vs Profit Divergence Detection
+* Regional Risk / Opportunity Classification
 
-#### Core Metrics Generated
+---
+
+### 🔹 Segment-Level Growth Analysis
+
+Time-based performance evaluation using Order Date.
+
+* Annual Sales by Segment
+* Annual Profit by Segment
+* Year-over-Year (YoY) Sales Growth %
+* Year-over-Year Profit Growth %
+* Overall Multi-Year Growth (Start vs End Comparison)
+* Compound Annual Growth Rate (CAGR) per Segment
+
+---
+
+### 🔹 Core Metrics Generated
 
 * Total Revenue
 * Total Profit
 * Profit Margin
 * Revenue Share
 * Performance Rankings
+* Growth Rates (YoY & CAGR)
 
 ---
 
@@ -57,51 +90,60 @@ This module focuses on revenue distribution, profitability evaluation, and perfo
 
 * GROUP BY Aggregations
 * Common Table Expressions (CTEs)
-* Window Functions (DENSE_RANK)
-* Conditional Logic (CASE)
+* Window Functions (DENSE_RANK, LAG)
+* Time-Based Functions (Year Extraction)
 * Ratio & Contribution Calculations
-* Comparative Benchmarking (Average vs Aggregated Metrics)
+* Growth Rate Computations (YoY, CAGR)
+* Conditional Logic (CASE)
+* Comparative Benchmarking
 
 ---
 
 ## Business Insights Developed
 
 * Revenue concentration varies significantly across categories.
-* High-revenue segments are not always high-margin segments.
+* High-revenue categories do not always yield high margins.
 * Certain sub-categories operate at structural losses.
-* Regional performance differs in both volume and profitability.
-* Revenue-only evaluation can lead to misleading conclusions.
+* Regional profitability differs from revenue scale.
+* Segment growth rates differ despite similar revenue sizes.
+* Revenue growth does not always translate into proportional profit growth.
 
 ---
 
-## Next Development Phase
+## Upcoming Development Phase
 
-* Sales Aggregation by Segment
-* Monthly Sales Trend Analysis
-* Time-Based Profitability Trends
-* Cross-Dimensional Analysis (Region × Category × Segment)
-* Dashboard & Visualization Layer
+* Monthly Trend & Momentum Analysis
+* Margin Trend Over Time
+* Cross-Dimensional Analysis (Region × Segment × Category)
+* Executive KPI Dashboard Layer
 
 ---
 
-**Created By:** SHIKHAR SHARMA
-**Project Status:** Module 1 & Module 2 Completed | Expanding Analytical Layers
+## Tools Used
+
+* SQL (SQLite)
+* Git (Version Control)
+* GitHub (Repository Management)
 
 ---
 
 ## Getting Started
 
-1. Clone the repository:
-
 ```bash
 git clone https://github.com/SHIKHAR122/retail_business_intelligence.git
 ```
 
-2. Navigate to the modules folder and execute SQL scripts sequentially:
+Execute in order:
 
-   * `module1_data_cleaning`
-   * `module2_sales_aggregate`
-
-3. Review documentation files for methodology, logic explanations, and output structure.
+* `module1_data_cleaning`
+* `module2_sales_aggregate`
 
 ---
+
+## Project Status
+
+Module 1 & Module 2 Completed
+Currently expanding analytical depth and time-series evaluation.
+
+---
+
