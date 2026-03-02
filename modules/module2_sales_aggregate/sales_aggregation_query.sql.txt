@@ -592,6 +592,117 @@ ORDER BY
 
 
 
+--Month-over-Month (MoM) Growth Rate
+
+
+
+WITH monthly_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
+)
+
+SELECT
+    order_year,
+    order_month,
+    monthly_sales,
+    
+    LAG(monthly_sales) OVER (
+        ORDER BY order_year, order_month
+    ) AS previous_month_sales,
+
+    (
+        (monthly_sales - LAG(monthly_sales) OVER (
+            ORDER BY order_year, order_month
+        ))
+        /
+        LAG(monthly_sales) OVER (
+            ORDER BY order_year, order_month
+        )
+    ) * 100 AS mom_growth_percent
+
+FROM monthly_sales
+ORDER BY order_year, order_month;
+
+
+
+
+
+
+--Running Cumulative Sales
+
+
+WITH monthly_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
+)
+
+SELECT
+    order_year,
+    order_month,
+    monthly_sales,
+    
+    SUM(monthly_sales) OVER (
+        PARTITION BY order_year
+        ORDER BY order_month
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_sales
+
+FROM monthly_sales
+ORDER BY order_year, order_month;
+
+
+
+
+
+--Rolling Average 
+
+
+
+WITH monthly_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
+)
+SELECT
+    order_year,
+    order_month,
+    monthly_sales,  
+    AVG(monthly_sales) OVER (
+        PARTITION BY order_year
+        ORDER BY order_month
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS rolling_3_month_avg
+FROM monthly_sales
+ORDER BY order_year, order_month;
+
+
+
+
+
+
+
+
+--Highest And Lowest Month Sales
+
+
+
 
 
 
