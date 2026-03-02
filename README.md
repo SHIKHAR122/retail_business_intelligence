@@ -6,7 +6,7 @@ This project is a structured **Retail Business Intelligence system** built using
 
 The objective is to simulate real-world BI development by progressing from:
 
-Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series Evaluation
+Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series & Seasonality Evaluation
 
 All analysis is modular, documented, and designed to reflect practical BI workflows.
 
@@ -18,7 +18,7 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 2️⃣ Revenue & Profit Aggregation
 3️⃣ Segment & Time-Based Growth Analysis
 4️⃣ Business Insight Extraction
-5️⃣ Monthly & Trend Analysis (In Progress)
+5️⃣ Monthly & Seasonality Analysis (In Progress)
 6️⃣ (Upcoming) Dashboard Layer
 
 ---
@@ -84,17 +84,18 @@ This phase establishes customer-segmentation intelligence and profitability benc
 
 ---
 
-### 🔹 Monthly Sales Summary (In Progress)
+### 🔹 Monthly Sales Summary & Seasonality Analysis (In Progress)
 
-Currently building time-series intelligence at a monthly level:
+Currently expanding time-series intelligence at a monthly level with focus on seasonality detection:
 
 * Monthly Sales Aggregation
 * Monthly Profit Aggregation
 * Month-over-Month (MoM) Growth %
-* Revenue Seasonality Detection
+* Rolling Trend Evaluation
+* Seasonal Pattern Detection (Peak vs Off-Peak Months)
 * Monthly Performance Trends by Segment
 
-This phase introduces momentum tracking and prepares the dataset for dashboard visualization.
+This phase introduces momentum tracking and seasonality modeling, strengthening forecasting and executive reporting readiness.
 
 ---
 
@@ -120,6 +121,7 @@ This phase introduces momentum tracking and prepares the dataset for dashboard v
 * Growth Rate Computations (YoY, CAGR, MoM)
 * Conditional Logic (CASE)
 * Comparative Benchmarking
+* Trend & Seasonality Evaluation Techniques
 
 ---
 
@@ -131,13 +133,13 @@ This phase introduces momentum tracking and prepares the dataset for dashboard v
 * Regional profitability differs from revenue scale.
 * Segment growth rates differ despite similar revenue sizes.
 * Revenue growth does not always translate into proportional profit growth.
-* Monthly patterns reveal uneven performance momentum across segments.
+* Emerging seasonal patterns indicate uneven revenue distribution across months.
 
 ---
 
 ## Upcoming Development Phase
 
-* Complete Monthly Growth & Momentum Benchmarking
+* Complete Seasonality Benchmarking Across Segments
 * Margin Trend Over Time
 * Cross-Dimensional Analysis (Region × Segment × Category)
 * Executive KPI Dashboard Layer
@@ -169,8 +171,8 @@ Execute in order:
 
 Module 1 Completed
 Module 2 – Sales, Profit & Segment Analysis Completed
-Monthly Sales Summary – In Progress
+Monthly Sales Summary & Seasonality Trend Analysis – In Progress
 
-Currently expanding analytical depth into time-series and momentum evaluation.
+Currently deepening time-series intelligence and preparing for dashboard integration.
 
 ---
