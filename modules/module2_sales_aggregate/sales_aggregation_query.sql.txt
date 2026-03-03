@@ -699,7 +699,37 @@ ORDER BY order_year, order_month;
 
 
 
---Highest And Lowest Month Sales
+--Seasonal pattern Detection 
+
+
+
+WITH monthly_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
+),
+
+year_avg AS (
+    SELECT
+        order_year,
+        AVG(monthly_sales) AS yearly_avg
+    FROM monthly_sales
+    GROUP BY order_year
+)
+
+SELECT
+    m.order_year,
+    m.order_month,
+    ROUND(m.monthly_sales / y.yearly_avg, 3) AS normalized_sales
+FROM monthly_sales m
+JOIN year_avg y
+    ON m.order_year = y.order_year
+ORDER BY m.order_year, m.order_month;
 
 
 
@@ -707,6 +737,208 @@ ORDER BY order_year, order_month;
 
 
 
+
+--Monthly Profit Margin Trend
+
+
+
+WITH monthly_metrics AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales,
+        SUM(profit) AS monthly_profit
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
+),
+
+margin_calc AS (
+    SELECT
+        order_year,
+        order_month,
+        ROUND((monthly_profit * 100.0) / monthly_sales, 2) AS profit_margin_percent
+    FROM monthly_metrics
+)
+
+SELECT
+    order_year,
+    order_month,
+    profit_margin_percent,
+    
+    LAG(profit_margin_percent) OVER (
+        ORDER BY order_year, order_month
+    ) AS previous_month_margin,
+    
+    ROUND(
+        profit_margin_percent -
+        LAG(profit_margin_percent) OVER (
+            ORDER BY order_year, order_month
+        ),
+    2) AS mom_margin_change
+
+FROM margin_calc
+ORDER BY order_year, order_month;
+
+
+
+
+
+
+
+--Highest And Lowest Sales
+
+
+
+WITH sales_metrices AS (
+    SELECT 
+        strftime("%Y", order_date) AS order_year,
+        strftime("%m", order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY 
+        strftime("%Y", order_date),
+        strftime("%m", order_date)
+),
+
+sales_rank AS (
+    SELECT
+        order_year,
+        order_month,
+        monthly_sales,
+        ROW_NUMBER() OVER (
+            PARTITION BY order_year 
+            ORDER BY monthly_sales DESC
+        ) AS highest_rank,
+        ROW_NUMBER() OVER (
+            PARTITION BY order_year 
+            ORDER BY monthly_sales ASC
+        ) AS lowest_rank
+    FROM sales_metrices
+)
+
+SELECT 
+    order_year,
+    order_month,
+    CASE 
+        WHEN highest_rank = 1 THEN 'Highest Month'
+        WHEN lowest_rank = 1 THEN 'Lowest Month'
+    END AS month_type
+FROM sales_rank
+WHERE highest_rank = 1
+   OR lowest_rank = 1
+ORDER BY order_year, month_type;
+
+
+
+
+
+
+
+
+
+
+
+
+--================================================================================================================================
+						-- Revenue Contribution Percentage
+						-- Goal :- Show proportional analysis and strategic insight.
+ 
+--================================================================================================================================
+
+
+
+
+
+
+
+
+--Region-wise Contribution Percentage 
+
+
+
+WITH region_sales AS (
+    SELECT
+        region,
+        SUM(sales) AS total_region_sales
+    FROM superstore_clean
+    GROUP BY region
+),
+overall_sales AS (
+    SELECT
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+)
+SELECT
+    r.region,
+    r.total_region_sales,
+    ROUND(
+        (r.total_region_sales * 100.0) / o.total_sales,
+    2) AS contribution_percent
+FROM region_sales AS r
+CROSS JOIN overall_sales AS o
+ORDER BY contribution_percent DESC;
+
+
+
+
+--Category-wise Contribution Percentage 
+
+
+WITH category_sales AS (
+    SELECT 
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY category
+),
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+)
+SELECT 
+    c.category,
+    c.category_sales,
+    ROUND(
+        (c.category_sales * 100.0) / o.overall_sales,
+        2
+    ) AS category_percentage
+FROM category_sales AS c
+CROSS JOIN overall_sales AS o
+ORDER BY category_percentage DESC;
+
+
+
+
+--Segment-wise Contribution Percentage 
+
+
+WITH segment_sales AS (
+    SELECT  
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY segment
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+)
+
+SELECT 
+    s.segment,
+    s.segment_sales,
+    ROUND(
+        (s.segment_sales * 100.0) / o.total_sales,
+        2
+    ) AS segment_percentage
+FROM segment_sales AS s
+CROSS JOIN overall_sales AS o
+ORDER BY segment_percentage DESC;
 
 
 
