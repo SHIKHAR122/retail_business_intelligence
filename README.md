@@ -69,20 +69,7 @@ This module expands beyond simple aggregation into profitability benchmarking, s
 
 Time-based and structural evaluation using Order Date.
 
-* Total Sales by Segment
-* Total Profit by Segment
-* Profit Margin by Segment
-* Revenue Contribution % by Segment
-* Average Order Value (AOV) by Segment
-* Segment Ranking by Revenue
-* Segment Ranking by Profitability
-* Annual Sales by Segment
-* Annual Profit by Segment
-* Year-over-Year (YoY) Sales Growth %
-* Year-over-Year Profit Growth %
-* Overall Multi-Year Growth (Start vs End Comparison)
-* Compound Annual Growth Rate (CAGR) per Segment
-
+*Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series Evaluation → Revenue Contribution Modeling
 This phase establishes customer-segmentation intelligence and profitability benchmarking.
 
 ---
