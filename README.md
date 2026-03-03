@@ -1,3 +1,5 @@
+---
+
 # 📊 Retail Business Intelligence (Retail BI)
 
 ## Project Overview
@@ -6,7 +8,7 @@ This project is a structured **Retail Business Intelligence system** built using
 
 The objective is to simulate real-world BI development by progressing from:
 
-Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series & Seasonality Evaluation
+**Data Cleaning → Revenue & Profit Aggregation → Segment-Level Growth Analysis → Performance Benchmarking → Time-Series Evaluation → Revenue Contribution Modeling**
 
 All analysis is modular, documented, and designed to reflect practical BI workflows.
 
@@ -18,8 +20,9 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 2️⃣ Revenue & Profit Aggregation
 3️⃣ Segment & Time-Based Growth Analysis
 4️⃣ Business Insight Extraction
-5️⃣ Monthly & Seasonality Analysis (In Progress)
-6️⃣ (Upcoming) Dashboard Layer
+5️⃣ Monthly Trend Analysis (Completed)
+6️⃣ Revenue Contribution Modeling (In Progress)
+7️⃣ (Upcoming) Dashboard Layer
 
 ---
 
@@ -30,13 +33,13 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 * Structured dataset for downstream analysis
 * Validated revenue and profit fields
 
-Result: Clean, analysis-ready dataset.
+**Result:** Clean, analysis-ready dataset.
 
 ---
 
 ## ✅ Module 2: Sales, Profit & Growth Analysis (`module2_sales_aggregate`)
 
-This module expands beyond simple aggregation into profitability benchmarking, segment intelligence, and time-based performance evaluation.
+This module expands beyond simple aggregation into profitability benchmarking, structural analysis, and time-based performance evaluation.
 
 ---
 
@@ -84,22 +87,36 @@ This phase establishes customer-segmentation intelligence and profitability benc
 
 ---
 
-### 🔹 Monthly Sales Summary & Seasonality Analysis (In Progress)
+### 🔹 Monthly Sales Summary (Completed)
 
-Currently expanding time-series intelligence at a monthly level with focus on seasonality detection:
+Time-series intelligence developed at a monthly level:
 
 * Monthly Sales Aggregation
 * Monthly Profit Aggregation
 * Month-over-Month (MoM) Growth %
 * Rolling Trend Evaluation
-* Seasonal Pattern Detection (Peak vs Off-Peak Months)
 * Monthly Performance Trends by Segment
+* Revenue Momentum Tracking
 
-This phase introduces momentum tracking and seasonality modeling, strengthening forecasting and executive reporting readiness.
+This phase transitions the system from static analysis to dynamic trend monitoring.
 
 ---
 
-### 🔹 Core Metrics Generated
+### 🔹 Revenue Contribution Percentage Modeling (In Progress)
+
+Currently expanding structural analysis through proportional revenue modeling:
+
+* Revenue Contribution % by Month
+* Revenue Contribution % by Segment
+* Revenue Contribution % by Region
+* Cross-Dimensional Share Analysis (Segment × Month)
+* Structural Dependency Evaluation
+
+This phase introduces share-based intelligence to assess revenue concentration and dominance shifts over time.
+
+---
+
+## 🔹 Core Metrics Generated
 
 * Total Revenue
 * Total Profit
@@ -108,6 +125,7 @@ This phase introduces momentum tracking and seasonality modeling, strengthening 
 * Performance Rankings
 * Growth Rates (YoY, CAGR, MoM)
 * Average Order Value (AOV)
+* Monthly Trend Indicators
 
 ---
 
@@ -115,13 +133,13 @@ This phase introduces momentum tracking and seasonality modeling, strengthening 
 
 * GROUP BY Aggregations
 * Common Table Expressions (CTEs)
-* Window Functions (DENSE_RANK, LAG)
+* Window Functions (`DENSE_RANK`, `LAG`)
 * Time-Based Functions (Year & Month Extraction)
 * Ratio & Contribution Calculations
 * Growth Rate Computations (YoY, CAGR, MoM)
-* Conditional Logic (CASE)
+* Conditional Logic (`CASE`)
 * Comparative Benchmarking
-* Trend & Seasonality Evaluation Techniques
+* Rolling Trend Evaluation
 
 ---
 
@@ -133,13 +151,13 @@ This phase introduces momentum tracking and seasonality modeling, strengthening 
 * Regional profitability differs from revenue scale.
 * Segment growth rates differ despite similar revenue sizes.
 * Revenue growth does not always translate into proportional profit growth.
-* Emerging seasonal patterns indicate uneven revenue distribution across months.
+* Monthly analysis reveals measurable volatility and momentum shifts.
 
 ---
 
 ## Upcoming Development Phase
 
-* Complete Seasonality Benchmarking Across Segments
+* Complete Revenue Contribution Benchmarking
 * Margin Trend Over Time
 * Cross-Dimensional Analysis (Region × Segment × Category)
 * Executive KPI Dashboard Layer
@@ -169,10 +187,11 @@ Execute in order:
 
 ## Project Status
 
-Module 1 Completed
-Module 2 – Sales, Profit & Segment Analysis Completed
-Monthly Sales Summary & Seasonality Trend Analysis – In Progress
+✔ Module 1 Completed
+✔ Module 2 – Sales, Profit & Segment Analysis Completed
+✔ Monthly Sales Summary Completed
+🚧 Revenue Contribution Percentage Modeling – In Progress
 
-Currently deepening time-series intelligence and preparing for dashboard integration.
+Currently strengthening structural revenue intelligence and preparing for dashboard integration.
 
 ---
