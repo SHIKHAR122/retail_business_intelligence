@@ -944,3 +944,530 @@ ORDER BY segment_percentage DESC;
 
 
 
+--Top Contributors And Long Tail Analysis
+
+
+--FOR REGION WISE TOP CONTRIBUTORS AND LONG TAIL--	
+
+
+WITH regional_sales AS			
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS regional_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
+),
+
+overall_sales AS (
+    SELECT SUM(sales) AS total_sales
+    FROM superstore_clean
+),
+
+regional_contribution_percen AS (
+    SELECT
+        r.order_year,
+        r.region,
+        r.regional_sales,
+        o.total_sales,
+        ROUND((r.regional_sales * 100.0) / o.total_sales, 2) AS regional_contribution_percen,
+        SUM(ROUND((r.regional_sales * 100.0) / o.total_sales, 2)) 
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.regional_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM regional_sales AS r
+    CROSS JOIN overall_sales AS o
+)
+SELECT *
+FROM regional_contribution_percen
+ORDER BY order_year, cumulative_percentage;
+
+
+
+--FOR CATEGORY WISE TOP CONTRIBUTORS AND LONG TAILS--
+
+WITH category_sales AS (
+    SELECT
+        category,
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), category
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+),
+category_contribution_percen AS (
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        o.overall_sales,
+        SUM(
+            ROUND((c.category_sales * 100.0) / o.overall_sales, 2)
+        ) OVER (
+            PARTITION BY c.order_year
+            ORDER BY c.category_sales DESC
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+        ) AS cumulative_percentage
+    FROM category_sales AS c
+    CROSS JOIN overall_sales AS o
+)
+SELECT * 
+FROM category_contribution_percen
+ORDER BY order_year, cumulative_percentage;
+
+
+
+
+--FOR SEGMENT WISE TOP CONTRIBUTORS AND LONG TAILS
+
+
+WITH segment_sales AS (
+    SELECT
+        segment,
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), segment
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+),
+
+segment_contribution_percen AS (
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        o.overall_sales,
+        ROUND((s.segment_sales * 100.0) / o.overall_sales, 2) AS segment_percentage,
+        SUM((s.segment_sales * 100.0) / o.overall_sales) 
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales AS s
+    CROSS JOIN overall_sales AS o
+)
+
+SELECT
+    order_year,
+    segment,
+    segment_sales,
+    segment_percentage,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage
+FROM segment_contribution_percen
+ORDER BY order_year, cumulative_percentage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Parento Insights For Each Entity 
+
+
+
+--REGION-LEVEL PARETO INSIGHT
+
+
+WITH regional_sales AS (
+    SELECT 
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS regional_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
+),
+
+overall_sales AS (
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
+),
+
+regional_cumulative_percent AS (
+    SELECT
+        r.order_year,
+        r.region,
+        r.regional_sales,
+        (r.regional_sales * 100.0) / o.overall_sales AS regional_percentage,
+        SUM((r.regional_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.regional_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM regional_sales r
+    JOIN overall_sales o
+        ON r.order_year = o.order_year
+)
+
+SELECT 
+    order_year,
+    region,
+    regional_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
+FROM regional_cumulative_percent
+ORDER BY order_year, cumulative_percentage;
+
+
+
+--CATEGORY-LEVEL PARETO INSIGHT
+
+
+WITH category_sales AS (
+    SELECT 
+        strftime("%Y", order_date) AS order_year,
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), category
+),
+
+overall_sales AS (
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
+),
+
+category_cumulative_percent AS (
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
+        SUM((c.category_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY c.order_year
+                ORDER BY c.category_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM category_sales c
+    JOIN overall_sales o
+        ON c.order_year = o.order_year
+)
+
+SELECT 
+    order_year,
+    category,
+    category_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
+FROM category_cumulative_percent
+ORDER BY order_year, cumulative_percentage;
+
+
+
+
+
+
+--SEGMENT-LEVEL PARETO INSIGHT
+
+
+WITH segment_sales AS (
+    SELECT 
+        strftime("%Y", order_date) AS order_year,
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date),segment
+),
+
+overall_sales AS (
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
+),
+
+segment_cumulative_percent AS (
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
+        SUM((s.segment_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales AS s
+    JOIN overall_sales AS o
+        ON s.order_year = o.order_year
+)
+
+SELECT 
+    order_year,
+    segment,
+    segment_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
+FROM segment_cumulative_percent
+ORDER BY order_year, cumulative_percentage;
+
+
+
+
+
+
+
+
+
+
+
+--Dependency Risk Detection 
+
+
+--Region-Level Dependency Risk Detection
+
+WITH region_sales AS (
+    SELECT 
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS region_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
+),
+
+overall_sales AS (
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
+),
+
+region_metrics AS (
+    SELECT
+        r.order_year,
+        r.region,
+        r.region_sales,
+        (r.region_sales * 100.0) / o.overall_sales AS region_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY r.order_year
+            ORDER BY r.region_sales DESC
+        ) AS region_rank,
+        SUM((r.region_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.region_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM region_sales r
+    JOIN overall_sales o
+        ON r.order_year = o.order_year
+),
+
+risk_summary AS (
+    SELECT
+        order_year,
+
+        -- Top 1 share
+        MAX(CASE WHEN region_rank = 1 THEN region_percentage END) AS top1_share,
+
+        -- Top 2 combined share
+        SUM(CASE WHEN region_rank <= 2 THEN region_percentage END) AS top2_share,
+
+        -- Number of regions needed to reach 80%
+        COUNT(CASE WHEN cumulative_percentage <= 80 THEN 1 END) AS regions_to_80
+
+    FROM region_metrics
+    GROUP BY order_year
+)
+
+SELECT
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    regions_to_80,
+
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 80 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
+
+FROM risk_summary
+ORDER BY order_year;
+
+
+
+
+
+-- Segment- Level Dependency Risk Detection
+
+
+WITH segment_sales AS (
+    SELECT 
+        strftime('%Y', order_date) AS order_year,
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date), segment
+),
+
+overall_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
+),
+
+segment_metrics AS (
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY s.order_year
+            ORDER BY s.segment_sales DESC
+        ) AS segment_rank,
+        SUM((s.segment_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales s
+    JOIN overall_sales o
+        ON s.order_year = o.order_year
+),
+
+risk_summary AS (
+    SELECT
+        order_year,
+        MAX(CASE WHEN segment_rank = 1 THEN segment_percentage END) AS top1_share,
+        SUM(CASE WHEN segment_rank <= 2 THEN segment_percentage END) AS top2_share,
+        MIN(CASE WHEN cumulative_percentage >= 80 THEN segment_rank END) AS segments_to_80
+    FROM segment_metrics
+    GROUP BY order_year
+)
+
+SELECT
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    segments_to_80,
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
+FROM risk_summary
+ORDER BY order_year;
+
+
+
+
+
+
+--Category Level Risk Detection 
+
+
+
+
+WITH category_sales AS (
+    SELECT 
+        strftime('%Y', order_date) AS order_year,
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date), category
+),
+
+overall_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
+),
+
+category_metrics AS (
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY c.order_year
+            ORDER BY c.category_sales DESC
+        ) AS category_rank,
+        SUM((c.category_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY c.order_year
+                ORDER BY c.category_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM category_sales c
+    JOIN overall_sales o
+        ON c.order_year = o.order_year
+),
+
+risk_summary AS (
+    SELECT
+        order_year,
+        MAX(CASE WHEN category_rank = 1 THEN category_percentage END) AS top1_share,
+        SUM(CASE WHEN category_rank <= 2 THEN category_percentage END) AS top2_share,
+        MIN(CASE WHEN cumulative_percentage >= 80 THEN category_rank END) AS categories_to_80
+    FROM category_metrics
+    GROUP BY order_year
+)
+
+SELECT
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    categories_to_80,
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
+FROM risk_summary
+ORDER BY order_year;
+
+
+
+
+
+
+
+
