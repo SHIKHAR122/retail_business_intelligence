@@ -7,14 +7,14 @@
 
 
 --=======================================================================================
-		-- Sales by Category
-		--GOAL - To Show category-level profitability and dependency risk.
+ 		-- Sales by Category
+ 		--GOAL - To Show category-level profitability and dependency risk.
 --=======================================================================================
 
 --Total sales by Category:
-SELECT 
-    category,
-    ROUND(SUM(sales), 2) AS total_sales
+SELECT
+    category,
+    ROUND(SUM(sales), 2) AS total_sales
 FROM superstore_clean
 GROUP BY category
 ORDER BY total_sales DESC;
@@ -22,21 +22,21 @@ ORDER BY total_sales DESC;
 
 --Total Profit By Category
 
-   SELECT
-       category,
-       ROUND(SUM(profit),2) AS Total_Profit
-   FROM superstore_clean
-   GROUP BY category
-   ORDER BY Total_Profit DESC;
+   SELECT
+       category,
+       ROUND(SUM(profit),2) AS Total_Profit
+   FROM superstore_clean
+   GROUP BY category
+   ORDER BY Total_Profit DESC;
 
 
 --Profit Margin By Category
-  
-  SELECT 
-    category,
-    SUM(sales) AS total_sales,
-    SUM(profit) AS total_profit,
-    ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS profit_margin_percentage
+ 
+  SELECT
+    category,
+    SUM(sales) AS total_sales,
+    SUM(profit) AS total_profit,
+    ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS profit_margin_percentage
 FROM superstore_clean
 GROUP BY category
 ORDER BY profit_margin_percentage DESC;
@@ -45,14 +45,14 @@ ORDER BY profit_margin_percentage DESC;
 
 
 --Revenue Contribution By Category
-    SELECT
-    category,
-    SUM(sales) AS total_sales,
-    ROUND(
-        SUM(sales) * 100.0 
-        / SUM(SUM(sales)) OVER (),
-        2
-    ) AS revenue_contribution_pct
+    SELECT
+    category,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution_pct
 FROM superstore_clean
 GROUP BY category
 ORDER BY revenue_contribution_pct DESC;
@@ -61,18 +61,18 @@ ORDER BY revenue_contribution_pct DESC;
 
 
 --Rank Categories By Revenue
-       WITH category_revenue AS (
-    SELECT 
-        category,
-        SUM(sales) AS total_sales
-    FROM superstore_clean
-    GROUP BY category
+       WITH category_revenue AS (
+    SELECT
+        category,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY category
 )
 
-SELECT 
-    category,
-    total_sales,
-    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS revenue_rank
+SELECT
+    category,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS revenue_rank
 FROM category_revenue
 ORDER BY revenue_rank;
 
@@ -82,17 +82,17 @@ ORDER BY revenue_rank;
 --Rank Categories By Revenue
 
 WITH category_profit AS (
-    SELECT
-        category,
-        SUM(profit) AS total_profit
-    FROM superstore_clean
-    GROUP BY category
+    SELECT
+        category,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY category
 )
 
 SELECT
-    category,
-    total_profit,
-    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS profit_rank
+    category,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS profit_rank
 FROM category_profit
 ORDER BY profit_rank;
 
@@ -100,32 +100,32 @@ ORDER BY profit_rank;
 
 --Identify High-Sales but Low-Margin Categories
 WITH category_metrics AS (
-    SELECT
-        category,
-        SUM(sales) AS total_sales,
-        SUM(profit) AS total_profit,
-        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
-    FROM superstore_clean
-    GROUP BY category
+    SELECT
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY category
 ),
 
 overall_avg AS (
-    SELECT
-        AVG(total_sales) AS avg_sales,
-        AVG(profit_margin) AS avg_margin
-    FROM category_metrics
+    SELECT
+        AVG(total_sales) AS avg_sales,
+        AVG(profit_margin) AS avg_margin
+    FROM category_metrics
 )
 
 SELECT
-    c.category,
-    c.total_sales,
-    c.total_profit,
-    ROUND(c.profit_margin, 4) AS profit_margin
+    c.category,
+    c.total_sales,
+    c.total_profit,
+    ROUND(c.profit_margin, 4) AS profit_margin
 FROM category_metrics c
 CROSS JOIN overall_avg o
-WHERE 
-    c.total_sales > o.avg_sales
-    AND c.profit_margin < o.avg_margin
+WHERE
+    c.total_sales > o.avg_sales
+    AND c.profit_margin < o.avg_margin
 ORDER BY c.total_sales DESC;
 
 
@@ -137,21 +137,21 @@ ORDER BY c.total_sales DESC;
 
 
 WITH subcategory_metrics AS (
-    SELECT
-        sub_category,
-        SUM(sales) AS total_sales,
-        SUM(profit) AS total_profit,
-        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
-    FROM superstore_clean
-    GROUP BY sub_category
+    SELECT
+        sub_category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) * 1.0 / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY sub_category
 )
 
 SELECT
-    sub_category,
-    total_sales,
-    total_profit,
-    ROUND(profit_margin, 4) AS profit_margin,
-    DENSE_RANK() OVER (ORDER BY total_profit ASC) AS loss_rank
+    sub_category,
+    total_sales,
+    total_profit,
+    ROUND(profit_margin, 4) AS profit_margin,
+    DENSE_RANK() OVER (ORDER BY total_profit ASC) AS loss_rank
 FROM subcategory_metrics
 WHERE total_profit < 0
 ORDER BY total_profit ASC;
@@ -160,8 +160,8 @@ ORDER BY total_profit ASC;
 
 
 --====================================================================================================
-			--Sales By Region
-			--GOAL-  Show regional performance intelligence.
+ 			--Sales By Region
+ 			--GOAL-  Show regional performance intelligence.
 --====================================================================================================
 
 
@@ -171,8 +171,8 @@ ORDER BY total_profit ASC;
 
 
 SELECT
-	region,
-	SUM(sales) AS regional_sales
+ 	region,
+ 	SUM(sales) AS regional_sales
 FROM superstore_clean
 GROUP BY region
 ORDER BY regional_sales DESC;
@@ -184,8 +184,8 @@ ORDER BY regional_sales DESC;
 
 
 SELECT
-	region,
-	SUM(profit) AS regional_profit
+ 	region,
+ 	SUM(profit) AS regional_profit
 FROM superstore_clean
 GROUP BY region
 ORDER BY regional_profit DESC;
@@ -196,10 +196,10 @@ ORDER BY regional_profit DESC;
 --Profit Margin By Region
 
 SELECT
-	region,
-	SUM(profit) AS regional_profit,
-	SUM(sales) AS regional_sales,
-	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  regional_profit_margin
+ 	region,
+ 	SUM(profit) AS regional_profit,
+ 	SUM(sales) AS regional_sales,
+ 	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  regional_profit_margin
 FROM superstore_clean
 GROUP BY region
 ORDER BY regional_profit_margin DESC;
@@ -209,14 +209,14 @@ ORDER BY regional_profit_margin DESC;
 
 --Revenue Contribution BY Region
 
-    SELECT
-    region,
-    SUM(sales) AS total_sales,
-    ROUND(
-        SUM(sales) * 100.0 
-        / SUM(SUM(sales)) OVER (),
-        2
-    ) AS revenue_contribution
+    SELECT
+    region,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution
 FROM superstore_clean
 GROUP BY region
 ORDER BY revenue_contribution DESC;
@@ -228,17 +228,17 @@ ORDER BY revenue_contribution DESC;
 
 
 WITH sales_revenue AS (
-    SELECT 
-        region,
-        SUM(sales) AS total_sales
-    FROM superstore_clean
-    GROUP BY region
+    SELECT
+        region,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY region
 )
 
-SELECT 
-    region,
-    total_sales,
-    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS region_rank
+SELECT
+    region,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS region_rank
 FROM sales_revenue
 ORDER BY region_rank;
 
@@ -251,17 +251,17 @@ ORDER BY region_rank;
 
 
 WITH profit_revenue AS (
-    SELECT 
-        region,
-        SUM(profit) AS total_profit
-    FROM superstore_clean
-    GROUP BY region
+    SELECT
+        region,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY region
 )
 
-SELECT 
-    region,
-    total_profit,
-    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS region_rank
+SELECT
+    region,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS region_rank
 FROM profit_revenue
 ORDER BY region_rank;
 
@@ -269,26 +269,26 @@ ORDER BY region_rank;
 
 
 --Identify Highest & Lowest Performing Regions
-  
+ 
 
 WITH regional_sales AS (
-    SELECT 
-        region,
-        SUM(sales) AS total_sales
-    FROM superstore_clean
-    GROUP BY region
+    SELECT
+        region,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY region
 )
 
-SELECT 
-    region,
-    total_sales,
-    CASE 
-        WHEN total_sales = (SELECT MAX(total_sales) FROM regional_sales)
-            THEN 'Highest Performer'
-        WHEN total_sales = (SELECT MIN(total_sales) FROM regional_sales)
-            THEN 'Lowest Performer'
-        ELSE 'Other'
-    END AS performance_label
+SELECT
+    region,
+    total_sales,
+    CASE
+        WHEN total_sales = (SELECT MAX(total_sales) FROM regional_sales)
+            THEN 'Highest Performer'
+        WHEN total_sales = (SELECT MIN(total_sales) FROM regional_sales)
+            THEN 'Lowest Performer'
+        ELSE 'Other'
+    END AS performance_label
 FROM regional_sales
 ORDER BY total_sales DESC;
 
@@ -299,35 +299,35 @@ ORDER BY total_sales DESC;
 
 
 WITH category_summary AS (
-    SELECT 
-        category,
-        SUM(sales) AS total_sales,
-        SUM(profit) AS total_profit,
-        SUM(profit) / SUM(sales) AS profit_margin
-    FROM superstore_clean
-    GROUP BY category
+    SELECT
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        SUM(profit) / SUM(sales) AS profit_margin
+    FROM superstore_clean
+    GROUP BY category
 ),
 overall_avg AS (
-    SELECT 
-        AVG(total_sales) AS avg_sales,
-        AVG(profit_margin) AS avg_margin
-    FROM category_summary
+    SELECT
+        AVG(total_sales) AS avg_sales,
+        AVG(profit_margin) AS avg_margin
+    FROM category_summary
 )
 
-SELECT 
-    c.category,
-    c.total_sales,
-    c.total_profit,
-    c.profit_margin,
-    CASE 
-        WHEN c.total_sales > o.avg_sales 
-             AND c.profit_margin < o.avg_margin
-            THEN 'High Sales - Low Margin (Risk)'
-        WHEN c.total_sales < o.avg_sales 
-             AND c.profit_margin > o.avg_margin
-            THEN 'Low Sales - High Margin (Opportunity)'
-        ELSE 'Normal'
-    END AS performance_type
+SELECT
+    c.category,
+    c.total_sales,
+    c.total_profit,
+    c.profit_margin,
+    CASE
+        WHEN c.total_sales > o.avg_sales
+             AND c.profit_margin < o.avg_margin
+            THEN 'High Sales - Low Margin (Risk)'
+        WHEN c.total_sales < o.avg_sales
+             AND c.profit_margin > o.avg_margin
+            THEN 'Low Sales - High Margin (Opportunity)'
+        ELSE 'Normal'
+    END AS performance_type
 FROM category_summary c, overall_avg o
 ORDER BY c.total_sales DESC;
 
@@ -337,8 +337,8 @@ ORDER BY c.total_sales DESC;
 
 
 --======================================================================================================
-					--Sales By Segment
-					--Goal - Show customer segmentation intelligence
+ 					--Sales By Segment
+ 					--Goal - Show customer segmentation intelligence
 
 --======================================================================================================
 
@@ -346,9 +346,9 @@ ORDER BY c.total_sales DESC;
 --Total Sales by Segment
 
 
-SELECT 
-    segment,
-    ROUND(SUM(sales), 2) AS total_sales
+SELECT
+    segment,
+    ROUND(SUM(sales), 2) AS total_sales
 FROM superstore_clean
 GROUP BY segment
 ORDER BY total_sales DESC;
@@ -360,9 +360,9 @@ ORDER BY total_sales DESC;
 
 --Total Profit By Segment
 
-SELECT 
-    segment,
-    ROUND(SUM(profit), 2) AS total_profit
+SELECT
+    segment,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM superstore_clean
 GROUP BY segment
 ORDER BY total_profit DESC;
@@ -373,10 +373,10 @@ ORDER BY total_profit DESC;
 --Profit Margin by Segment
 
 SELECT
-	segment,
-	SUM(profit) AS total_profit,
-	SUM(sales) AS total_sales,
-	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  profit_margin
+ 	segment,
+ 	SUM(profit) AS total_profit,
+ 	SUM(sales) AS total_sales,
+ 	 ROUND((SUM(profit) / SUM(sales)) * 100, 2) AS  profit_margin
 FROM superstore_clean
 GROUP BY segment
 ORDER BY profit_margin DESC;
@@ -389,14 +389,14 @@ ORDER BY profit_margin DESC;
 
 --Revenue Contribution By Segment
 
- SELECT
-    segment,
-    SUM(sales) AS total_sales,
-    ROUND(
-        SUM(sales) * 100.0 
-        / SUM(SUM(sales)) OVER (),
-        2
-    ) AS revenue_contribution
+ SELECT
+    segment,
+    SUM(sales) AS total_sales,
+    ROUND(
+        SUM(sales) * 100.0
+        / SUM(SUM(sales)) OVER (),
+        2
+    ) AS revenue_contribution
 FROM superstore_clean
 GROUP BY segment
 ORDER BY revenue_contribution DESC;
@@ -408,11 +408,11 @@ ORDER BY revenue_contribution DESC;
 --Average Order Value by Segment
 
 
- SELECT 
-    Segment,
-    SUM(Sales) AS Total_Sales,
-    COUNT(DISTINCT Order_ID) AS Total_Orders,
-    SUM(Sales) / COUNT(DISTINCT Order_ID) AS Avg_Order_Value
+ SELECT
+    Segment,
+    SUM(Sales) AS Total_Sales,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    SUM(Sales) / COUNT(DISTINCT Order_ID) AS Avg_Order_Value
 FROM superstore_clean
 GROUP BY Segment
 ORDER BY Avg_Order_Value DESC;
@@ -425,17 +425,17 @@ ORDER BY Avg_Order_Value DESC;
 --Rank Segments by Profitability
 
 WITH profit_revenue AS (
-    SELECT 
-        segment,
-        SUM(profit) AS total_profit
-    FROM superstore_clean
-    GROUP BY segment 
+    SELECT
+        segment,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY segment
 )
 
-SELECT 
-    segment,
-    total_profit,
-    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS segment_rank
+SELECT
+    segment,
+    total_profit,
+    DENSE_RANK() OVER (ORDER BY total_profit DESC) AS segment_rank
 FROM profit_revenue
 ORDER BY segment_rank;
 
@@ -446,16 +446,16 @@ ORDER BY segment_rank;
 --Rank Segments by Revenue
 
 WITH total_revenue AS (
-    SELECT 
-        segment,
-        SUM(sales) AS total_sales		
-    FROM superstore_clean
-    GROUP BY segment 
+    SELECT
+        segment,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY segment
 )
-SELECT 
-    segment,
-    total_sales,
-    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS segment_rank
+SELECT
+    segment,
+    total_sales,
+    DENSE_RANK() OVER (ORDER BY total_sales DESC) AS segment_rank
 FROM total_revenue
 ORDER BY segment_rank;
 
@@ -468,75 +468,75 @@ ORDER BY segment_rank;
 
 
 WITH annual_metrics AS (
-    SELECT
-        segment,
-        strftime('%Y', order_date) AS order_year,
-        SUM(sales)  AS total_sales,
-        SUM(profit) AS total_profit
-    FROM superstore_clean
-    GROUP BY
-        segment,
-        strftime('%Y', order_date)
+    SELECT
+        segment,
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales)  AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY
+        segment,
+        strftime('%Y', order_date)
 ),
 
 bounds AS (
-    SELECT
-        segment,
-        order_year,
-        total_sales,
-        total_profit,
+    SELECT
+        segment,
+        order_year,
+        total_sales,
+        total_profit,
 
-        FIRST_VALUE(total_sales) OVER (
-            PARTITION BY segment
-            ORDER BY order_year
-        ) AS first_sales,
+        FIRST_VALUE(total_sales) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+        ) AS first_sales,
 
-        LAST_VALUE(total_sales) OVER (
-            PARTITION BY segment
-            ORDER BY order_year
-            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-        ) AS last_sales,
+        LAST_VALUE(total_sales) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS last_sales,
 
-        FIRST_VALUE(total_profit) OVER (
-            PARTITION BY segment
-            ORDER BY order_year
-        ) AS first_profit,
+        FIRST_VALUE(total_profit) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+        ) AS first_profit,
 
-        LAST_VALUE(total_profit) OVER (
-            PARTITION BY segment
-            ORDER BY order_year
-            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-        ) AS last_profit
+        LAST_VALUE(total_profit) OVER (
+            PARTITION BY segment
+            ORDER BY order_year
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS last_profit
 
-    FROM annual_metrics
+    FROM annual_metrics
 )
 
 SELECT DISTINCT
-    segment,
+    segment,
 
-    first_sales,
-    last_sales,
+    first_sales,
+    last_sales,
 
-    ROUND((last_sales - first_sales) * 1.0 / first_sales * 100, 2)
-        AS overall_sales_growth_pct,
+    ROUND((last_sales - first_sales) * 1.0 / first_sales * 100, 2)
+        AS overall_sales_growth_pct,
 
-    ROUND((POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) * 100, 2)
-        AS sales_cagr_pct,
+    ROUND((POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) * 100, 2)
+        AS sales_cagr_pct,
 
-    first_profit,
-    last_profit,
+    first_profit,
+    last_profit,
 
-    ROUND((last_profit - first_profit) * 1.0 / first_profit * 100, 2)
-        AS overall_profit_growth_pct,
+    ROUND((last_profit - first_profit) * 1.0 / first_profit * 100, 2)
+        AS overall_profit_growth_pct,
 
-    ROUND((POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1) * 100, 2)
-        AS profit_cagr_pct,
+    ROUND((POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1) * 100, 2)
+        AS profit_cagr_pct,
 
-    ROUND(
-        (POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) -
-        (POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1),
-        4
-    ) AS growth_gap_cagr
+    ROUND(
+        (POWER(last_sales * 1.0 / first_sales, 1.0/3) - 1) -
+        (POWER(last_profit * 1.0 / first_profit, 1.0/3) - 1),
+        4
+    ) AS growth_gap_cagr
 
 FROM bounds
 ORDER BY segment;
@@ -547,29 +547,29 @@ ORDER BY segment;
 
 
 --=========================================================================================
-				Monthly Sales Summary
-				Goal- Demonstrate time-series and trend analysis skills.
- 
+ 				Monthly Sales Summary
+ 				Goal- Demonstrate time-series and trend analysis skills.
+ 
 --=========================================================================================
 
 
 
 
 
---Monthly Sales 
+--Monthly Sales
 
 
 SELECT
-    strftime('%Y', order_date) AS order_year,
-    strftime('%m', order_date) AS order_month,
-    SUM(sales) AS monthly_sales
+    strftime('%Y', order_date) AS order_year,
+    strftime('%m', order_date) AS order_month,
+    SUM(sales) AS monthly_sales
 FROM superstore_clean
 GROUP BY
-    strftime('%Y', order_date),
-    strftime('%m', order_date)
+    strftime('%Y', order_date),
+    strftime('%m', order_date)
 ORDER BY
-    order_year,
-    order_month;
+    order_year,
+    order_month;
 
 
 
@@ -578,16 +578,16 @@ ORDER BY
 
 
 SELECT
-    strftime('%Y', order_date) AS order_year,
-    strftime('%m', order_date) AS order_month,
-    SUM(profit) AS monthly_profit
+    strftime('%Y', order_date) AS order_year,
+    strftime('%m', order_date) AS order_month,
+    SUM(profit) AS monthly_profit
 FROM superstore_clean
 GROUP BY
-    strftime('%Y', order_date),
-    strftime('%m', order_date)
+    strftime('%Y', order_date),
+    strftime('%m', order_date)
 ORDER BY
-    order_year,
-    order_month;
+    order_year,
+    order_month;
 
 
 
@@ -597,34 +597,34 @@ ORDER BY
 
 
 WITH monthly_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        strftime('%m', order_date) AS order_month,
-        SUM(sales) AS monthly_sales
-    FROM superstore_clean
-    GROUP BY
-        strftime('%Y', order_date),
-        strftime('%m', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
 )
 
 SELECT
-    order_year,
-    order_month,
-    monthly_sales,
-    
-    LAG(monthly_sales) OVER (
-        ORDER BY order_year, order_month
-    ) AS previous_month_sales,
+    order_year,
+    order_month,
+    monthly_sales,
+ 
+    LAG(monthly_sales) OVER (
+        ORDER BY order_year, order_month
+    ) AS previous_month_sales,
 
-    (
-        (monthly_sales - LAG(monthly_sales) OVER (
-            ORDER BY order_year, order_month
-        ))
-        /
-        LAG(monthly_sales) OVER (
-            ORDER BY order_year, order_month
-        )
-    ) * 100 AS mom_growth_percent
+    (
+        (monthly_sales - LAG(monthly_sales) OVER (
+            ORDER BY order_year, order_month
+        ))
+        /
+        LAG(monthly_sales) OVER (
+            ORDER BY order_year, order_month
+        )
+    ) * 100 AS mom_growth_percent
 
 FROM monthly_sales
 ORDER BY order_year, order_month;
@@ -638,26 +638,26 @@ ORDER BY order_year, order_month;
 
 
 WITH monthly_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        strftime('%m', order_date) AS order_month,
-        SUM(sales) AS monthly_sales
-    FROM superstore_clean
-    GROUP BY
-        strftime('%Y', order_date),
-        strftime('%m', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
 )
 
 SELECT
-    order_year,
-    order_month,
-    monthly_sales,
-    
-    SUM(monthly_sales) OVER (
-        PARTITION BY order_year
-        ORDER BY order_month
-        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ) AS cumulative_sales
+    order_year,
+    order_month,
+    monthly_sales,
+ 
+    SUM(monthly_sales) OVER (
+        PARTITION BY order_year
+        ORDER BY order_month
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_sales
 
 FROM monthly_sales
 ORDER BY order_year, order_month;
@@ -666,29 +666,29 @@ ORDER BY order_year, order_month;
 
 
 
---Rolling Average 
+--Rolling Average
 
 
 
 WITH monthly_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        strftime('%m', order_date) AS order_month,
-        SUM(sales) AS monthly_sales
-    FROM superstore_clean
-    GROUP BY
-        strftime('%Y', order_date),
-        strftime('%m', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
 )
 SELECT
-    order_year,
-    order_month,
-    monthly_sales,  
-    AVG(monthly_sales) OVER (
-        PARTITION BY order_year
-        ORDER BY order_month
-        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
-    ) AS rolling_3_month_avg
+    order_year,
+    order_month,
+    monthly_sales,
+    AVG(monthly_sales) OVER (
+        PARTITION BY order_year
+        ORDER BY order_month
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) AS rolling_3_month_avg
 FROM monthly_sales
 ORDER BY order_year, order_month;
 
@@ -699,36 +699,36 @@ ORDER BY order_year, order_month;
 
 
 
---Seasonal pattern Detection 
+--Seasonal pattern Detection
 
 
 
 WITH monthly_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        strftime('%m', order_date) AS order_month,
-        SUM(sales) AS monthly_sales
-    FROM superstore_clean
-    GROUP BY
-        strftime('%Y', order_date),
-        strftime('%m', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
 ),
 
 year_avg AS (
-    SELECT
-        order_year,
-        AVG(monthly_sales) AS yearly_avg
-    FROM monthly_sales
-    GROUP BY order_year
+    SELECT
+        order_year,
+        AVG(monthly_sales) AS yearly_avg
+    FROM monthly_sales
+    GROUP BY order_year
 )
 
 SELECT
-    m.order_year,
-    m.order_month,
-    ROUND(m.monthly_sales / y.yearly_avg, 3) AS normalized_sales
+    m.order_year,
+    m.order_month,
+    ROUND(m.monthly_sales / y.yearly_avg, 3) AS normalized_sales
 FROM monthly_sales m
 JOIN year_avg y
-    ON m.order_year = y.order_year
+    ON m.order_year = y.order_year
 ORDER BY m.order_year, m.order_month;
 
 
@@ -743,40 +743,40 @@ ORDER BY m.order_year, m.order_month;
 
 
 WITH monthly_metrics AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        strftime('%m', order_date) AS order_month,
-        SUM(sales) AS monthly_sales,
-        SUM(profit) AS monthly_profit
-    FROM superstore_clean
-    GROUP BY
-        strftime('%Y', order_date),
-        strftime('%m', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        SUM(sales) AS monthly_sales,
+        SUM(profit) AS monthly_profit
+    FROM superstore_clean
+    GROUP BY
+        strftime('%Y', order_date),
+        strftime('%m', order_date)
 ),
 
 margin_calc AS (
-    SELECT
-        order_year,
-        order_month,
-        ROUND((monthly_profit * 100.0) / monthly_sales, 2) AS profit_margin_percent
-    FROM monthly_metrics
+    SELECT
+        order_year,
+        order_month,
+        ROUND((monthly_profit * 100.0) / monthly_sales, 2) AS profit_margin_percent
+    FROM monthly_metrics
 )
 
 SELECT
-    order_year,
-    order_month,
-    profit_margin_percent,
-    
-    LAG(profit_margin_percent) OVER (
-        ORDER BY order_year, order_month
-    ) AS previous_month_margin,
-    
-    ROUND(
-        profit_margin_percent -
-        LAG(profit_margin_percent) OVER (
-            ORDER BY order_year, order_month
-        ),
-    2) AS mom_margin_change
+    order_year,
+    order_month,
+    profit_margin_percent,
+ 
+    LAG(profit_margin_percent) OVER (
+        ORDER BY order_year, order_month
+    ) AS previous_month_margin,
+ 
+    ROUND(
+        profit_margin_percent -
+        LAG(profit_margin_percent) OVER (
+            ORDER BY order_year, order_month
+        ),
+    2) AS mom_margin_change
 
 FROM margin_calc
 ORDER BY order_year, order_month;
@@ -792,42 +792,42 @@ ORDER BY order_year, order_month;
 
 
 WITH sales_metrices AS (
-    SELECT 
-        strftime("%Y", order_date) AS order_year,
-        strftime("%m", order_date) AS order_month,
-        SUM(sales) AS monthly_sales
-    FROM superstore_clean
-    GROUP BY 
-        strftime("%Y", order_date),
-        strftime("%m", order_date)
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        strftime("%m", order_date) AS order_month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY
+        strftime("%Y", order_date),
+        strftime("%m", order_date)
 ),
 
 sales_rank AS (
-    SELECT
-        order_year,
-        order_month,
-        monthly_sales,
-        ROW_NUMBER() OVER (
-            PARTITION BY order_year 
-            ORDER BY monthly_sales DESC
-        ) AS highest_rank,
-        ROW_NUMBER() OVER (
-            PARTITION BY order_year 
-            ORDER BY monthly_sales ASC
-        ) AS lowest_rank
-    FROM sales_metrices
+    SELECT
+        order_year,
+        order_month,
+        monthly_sales,
+        ROW_NUMBER() OVER (
+            PARTITION BY order_year
+            ORDER BY monthly_sales DESC
+        ) AS highest_rank,
+        ROW_NUMBER() OVER (
+            PARTITION BY order_year
+            ORDER BY monthly_sales ASC
+        ) AS lowest_rank
+    FROM sales_metrices
 )
 
-SELECT 
-    order_year,
-    order_month,
-    CASE 
-        WHEN highest_rank = 1 THEN 'Highest Month'
-        WHEN lowest_rank = 1 THEN 'Lowest Month'
-    END AS month_type
+SELECT
+    order_year,
+    order_month,
+    CASE
+        WHEN highest_rank = 1 THEN 'Highest Month'
+        WHEN lowest_rank = 1 THEN 'Lowest Month'
+    END AS month_type
 FROM sales_rank
 WHERE highest_rank = 1
-   OR lowest_rank = 1
+   OR lowest_rank = 1
 ORDER BY order_year, month_type;
 
 
@@ -842,9 +842,9 @@ ORDER BY order_year, month_type;
 
 
 --================================================================================================================================
-						-- Revenue Contribution Percentage
-						-- Goal :- Show proportional analysis and strategic insight.
- 
+ 						-- Revenue Contribution Percentage
+ 						-- Goal :- Show proportional analysis and strategic insight.
+ 
 --================================================================================================================================
 
 
@@ -854,28 +854,28 @@ ORDER BY order_year, month_type;
 
 
 
---Region-wise Contribution Percentage 
+--Region-wise Contribution Percentage
 
 
 
 WITH region_sales AS (
-    SELECT
-        region,
-        SUM(sales) AS total_region_sales
-    FROM superstore_clean
-    GROUP BY region
+    SELECT
+        region,
+        SUM(sales) AS total_region_sales
+    FROM superstore_clean
+    GROUP BY region
 ),
 overall_sales AS (
-    SELECT
-        SUM(sales) AS total_sales
-    FROM superstore_clean
+    SELECT
+        SUM(sales) AS total_sales
+    FROM superstore_clean
 )
 SELECT
-    r.region,
-    r.total_region_sales,
-    ROUND(
-        (r.total_region_sales * 100.0) / o.total_sales,
-    2) AS contribution_percent
+    r.region,
+    r.total_region_sales,
+    ROUND(
+        (r.total_region_sales * 100.0) / o.total_sales,
+    2) AS contribution_percent
 FROM region_sales AS r
 CROSS JOIN overall_sales AS o
 ORDER BY contribution_percent DESC;
@@ -883,28 +883,28 @@ ORDER BY contribution_percent DESC;
 
 
 
---Category-wise Contribution Percentage 
+--Category-wise Contribution Percentage
 
 
 WITH category_sales AS (
-    SELECT 
-        category,
-        SUM(sales) AS category_sales
-    FROM superstore_clean
-    GROUP BY category
+    SELECT
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY category
 ),
 overall_sales AS (
-    SELECT 
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
+    SELECT
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
 )
-SELECT 
-    c.category,
-    c.category_sales,
-    ROUND(
-        (c.category_sales * 100.0) / o.overall_sales,
-        2
-    ) AS category_percentage
+SELECT
+    c.category,
+    c.category_sales,
+    ROUND(
+        (c.category_sales * 100.0) / o.overall_sales,
+        2
+    ) AS category_percentage
 FROM category_sales AS c
 CROSS JOIN overall_sales AS o
 ORDER BY category_percentage DESC;
@@ -912,30 +912,30 @@ ORDER BY category_percentage DESC;
 
 
 
---Segment-wise Contribution Percentage 
+--Segment-wise Contribution Percentage
 
 
 WITH segment_sales AS (
-    SELECT  
-        segment,
-        SUM(sales) AS segment_sales
-    FROM superstore_clean
-    GROUP BY segment
+    SELECT
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY segment
 ),
 
 overall_sales AS (
-    SELECT 
-        SUM(sales) AS total_sales
-    FROM superstore_clean
+    SELECT
+        SUM(sales) AS total_sales
+    FROM superstore_clean
 )
 
-SELECT 
-    s.segment,
-    s.segment_sales,
-    ROUND(
-        (s.segment_sales * 100.0) / o.total_sales,
-        2
-    ) AS segment_percentage
+SELECT
+    s.segment,
+    s.segment_sales,
+    ROUND(
+        (s.segment_sales * 100.0) / o.total_sales,
+        2
+    ) AS segment_percentage
 FROM segment_sales AS s
 CROSS JOIN overall_sales AS o
 ORDER BY segment_percentage DESC;
@@ -947,38 +947,38 @@ ORDER BY segment_percentage DESC;
 --Top Contributors And Long Tail Analysis
 
 
---FOR REGION WISE TOP CONTRIBUTORS AND LONG TAIL--	
+--FOR REGION WISE TOP CONTRIBUTORS AND LONG TAIL--
 
 
-WITH regional_sales AS			
-    SELECT
-        strftime("%Y", order_date) AS order_year,
-        region,
-        SUM(sales) AS regional_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), region
+WITH regional_sales AS
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS regional_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
 ),
 
 overall_sales AS (
-    SELECT SUM(sales) AS total_sales
-    FROM superstore_clean
+    SELECT SUM(sales) AS total_sales
+    FROM superstore_clean
 ),
 
 regional_contribution_percen AS (
-    SELECT
-        r.order_year,
-        r.region,
-        r.regional_sales,
-        o.total_sales,
-        ROUND((r.regional_sales * 100.0) / o.total_sales, 2) AS regional_contribution_percen,
-        SUM(ROUND((r.regional_sales * 100.0) / o.total_sales, 2)) 
-            OVER (
-                PARTITION BY r.order_year
-                ORDER BY r.regional_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM regional_sales AS r
-    CROSS JOIN overall_sales AS o
+    SELECT
+        r.order_year,
+        r.region,
+        r.regional_sales,
+        o.total_sales,
+        ROUND((r.regional_sales * 100.0) / o.total_sales, 2) AS regional_contribution_percen,
+        SUM(ROUND((r.regional_sales * 100.0) / o.total_sales, 2))
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.regional_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM regional_sales AS r
+    CROSS JOIN overall_sales AS o
 )
 SELECT *
 FROM regional_contribution_percen
@@ -989,36 +989,36 @@ ORDER BY order_year, cumulative_percentage;
 --FOR CATEGORY WISE TOP CONTRIBUTORS AND LONG TAILS--
 
 WITH category_sales AS (
-    SELECT
-        category,
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS category_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), category
+    SELECT
+        category,
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), category
 ),
 
 overall_sales AS (
-    SELECT 
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
+    SELECT
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
 ),
 category_contribution_percen AS (
-    SELECT
-        c.order_year,
-        c.category,
-        c.category_sales,
-        o.overall_sales,
-        SUM(
-            ROUND((c.category_sales * 100.0) / o.overall_sales, 2)
-        ) OVER (
-            PARTITION BY c.order_year
-            ORDER BY c.category_sales DESC
-            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-        ) AS cumulative_percentage
-    FROM category_sales AS c
-    CROSS JOIN overall_sales AS o
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        o.overall_sales,
+        SUM(
+            ROUND((c.category_sales * 100.0) / o.overall_sales, 2)
+        ) OVER (
+            PARTITION BY c.order_year
+            ORDER BY c.category_sales DESC
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+        ) AS cumulative_percentage
+    FROM category_sales AS c
+    CROSS JOIN overall_sales AS o
 )
-SELECT * 
+SELECT *
 FROM category_contribution_percen
 ORDER BY order_year, cumulative_percentage;
 
@@ -1029,43 +1029,43 @@ ORDER BY order_year, cumulative_percentage;
 
 
 WITH segment_sales AS (
-    SELECT
-        segment,
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS segment_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), segment
+    SELECT
+        segment,
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), segment
 ),
 
 overall_sales AS (
-    SELECT 
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
+    SELECT
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
 ),
 
 segment_contribution_percen AS (
-    SELECT
-        s.order_year,
-        s.segment,
-        s.segment_sales,
-        o.overall_sales,
-        ROUND((s.segment_sales * 100.0) / o.overall_sales, 2) AS segment_percentage,
-        SUM((s.segment_sales * 100.0) / o.overall_sales) 
-            OVER (
-                PARTITION BY s.order_year
-                ORDER BY s.segment_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM segment_sales AS s
-    CROSS JOIN overall_sales AS o
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        o.overall_sales,
+        ROUND((s.segment_sales * 100.0) / o.overall_sales, 2) AS segment_percentage,
+        SUM((s.segment_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales AS s
+    CROSS JOIN overall_sales AS o
 )
 
 SELECT
-    order_year,
-    segment,
-    segment_sales,
-    segment_percentage,
-    ROUND(cumulative_percentage, 2) AS cumulative_percentage
+    order_year,
+    segment,
+    segment_sales,
+    segment_percentage,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage
 FROM segment_contribution_percen
 ORDER BY order_year, cumulative_percentage;
 
@@ -1082,7 +1082,7 @@ ORDER BY order_year, cumulative_percentage;
 
 
 
---Parento Insights For Each Entity 
+--Parento Insights For Each Entity
 
 
 
@@ -1090,48 +1090,48 @@ ORDER BY order_year, cumulative_percentage;
 
 
 WITH regional_sales AS (
-    SELECT 
-        strftime("%Y", order_date) AS order_year,
-        region,
-        SUM(sales) AS regional_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), region
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS regional_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
 ),
 
 overall_sales AS (
-    SELECT
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date)
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
 ),
 
 regional_cumulative_percent AS (
-    SELECT
-        r.order_year,
-        r.region,
-        r.regional_sales,
-        (r.regional_sales * 100.0) / o.overall_sales AS regional_percentage,
-        SUM((r.regional_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY r.order_year
-                ORDER BY r.regional_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM regional_sales r
-    JOIN overall_sales o
-        ON r.order_year = o.order_year
+    SELECT
+        r.order_year,
+        r.region,
+        r.regional_sales,
+        (r.regional_sales * 100.0) / o.overall_sales AS regional_percentage,
+        SUM((r.regional_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.regional_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM regional_sales r
+    JOIN overall_sales o
+        ON r.order_year = o.order_year
 )
 
-SELECT 
-    order_year,
-    region,
-    regional_sales,
-    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
-    CASE
-        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
-        ELSE 'Long Tail'
-    END AS contribution_type
+SELECT
+    order_year,
+    region,
+    regional_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
 FROM regional_cumulative_percent
 ORDER BY order_year, cumulative_percentage;
 
@@ -1141,48 +1141,48 @@ ORDER BY order_year, cumulative_percentage;
 
 
 WITH category_sales AS (
-    SELECT 
-        strftime("%Y", order_date) AS order_year,
-        category,
-        SUM(sales) AS category_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), category
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), category
 ),
 
 overall_sales AS (
-    SELECT
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date)
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
 ),
 
 category_cumulative_percent AS (
-    SELECT
-        c.order_year,
-        c.category,
-        c.category_sales,
-        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
-        SUM((c.category_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY c.order_year
-                ORDER BY c.category_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM category_sales c
-    JOIN overall_sales o
-        ON c.order_year = o.order_year
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
+        SUM((c.category_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY c.order_year
+                ORDER BY c.category_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM category_sales c
+    JOIN overall_sales o
+        ON c.order_year = o.order_year
 )
 
-SELECT 
-    order_year,
-    category,
-    category_sales,
-    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
-    CASE
-        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
-        ELSE 'Long Tail'
-    END AS contribution_type
+SELECT
+    order_year,
+    category,
+    category_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
 FROM category_cumulative_percent
 ORDER BY order_year, cumulative_percentage;
 
@@ -1195,48 +1195,48 @@ ORDER BY order_year, cumulative_percentage;
 
 
 WITH segment_sales AS (
-    SELECT 
-        strftime("%Y", order_date) AS order_year,
-        segment,
-        SUM(sales) AS segment_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date),segment
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date),segment
 ),
 
 overall_sales AS (
-    SELECT
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date)
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
 ),
 
 segment_cumulative_percent AS (
-    SELECT
-        s.order_year,
-        s.segment,
-        s.segment_sales,
-        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
-        SUM((s.segment_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY s.order_year
-                ORDER BY s.segment_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM segment_sales AS s
-    JOIN overall_sales AS o
-        ON s.order_year = o.order_year
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
+        SUM((s.segment_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales AS s
+    JOIN overall_sales AS o
+        ON s.order_year = o.order_year
 )
 
-SELECT 
-    order_year,
-    segment,
-    segment_sales,
-    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
-    CASE
-        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
-        ELSE 'Long Tail'
-    END AS contribution_type
+SELECT
+    order_year,
+    segment,
+    segment_sales,
+    ROUND(cumulative_percentage, 2) AS cumulative_percentage,
+    CASE
+        WHEN cumulative_percentage <= 80 THEN 'Top Contributor'
+        ELSE 'Long Tail'
+    END AS contribution_type
 FROM segment_cumulative_percent
 ORDER BY order_year, cumulative_percentage;
 
@@ -1250,77 +1250,77 @@ ORDER BY order_year, cumulative_percentage;
 
 
 
---Dependency Risk Detection 
+--Dependency Risk Detection
 
 
 --Region-Level Dependency Risk Detection
 
 WITH region_sales AS (
-    SELECT 
-        strftime("%Y", order_date) AS order_year,
-        region,
-        SUM(sales) AS region_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date), region
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        region,
+        SUM(sales) AS region_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date), region
 ),
 
 overall_sales AS (
-    SELECT
-        strftime("%Y", order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime("%Y", order_date)
+    SELECT
+        strftime("%Y", order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime("%Y", order_date)
 ),
 
 region_metrics AS (
-    SELECT
-        r.order_year,
-        r.region,
-        r.region_sales,
-        (r.region_sales * 100.0) / o.overall_sales AS region_percentage,
-        ROW_NUMBER() OVER (
-            PARTITION BY r.order_year
-            ORDER BY r.region_sales DESC
-        ) AS region_rank,
-        SUM((r.region_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY r.order_year
-                ORDER BY r.region_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM region_sales r
-    JOIN overall_sales o
-        ON r.order_year = o.order_year
+    SELECT
+        r.order_year,
+        r.region,
+        r.region_sales,
+        (r.region_sales * 100.0) / o.overall_sales AS region_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY r.order_year
+            ORDER BY r.region_sales DESC
+        ) AS region_rank,
+        SUM((r.region_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY r.order_year
+                ORDER BY r.region_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM region_sales r
+    JOIN overall_sales o
+        ON r.order_year = o.order_year
 ),
 
 risk_summary AS (
-    SELECT
-        order_year,
+    SELECT
+        order_year,
 
-        -- Top 1 share
-        MAX(CASE WHEN region_rank = 1 THEN region_percentage END) AS top1_share,
+        -- Top 1 share
+        MAX(CASE WHEN region_rank = 1 THEN region_percentage END) AS top1_share,
 
-        -- Top 2 combined share
-        SUM(CASE WHEN region_rank <= 2 THEN region_percentage END) AS top2_share,
+        -- Top 2 combined share
+        SUM(CASE WHEN region_rank <= 2 THEN region_percentage END) AS top2_share,
 
-        -- Number of regions needed to reach 80%
-        COUNT(CASE WHEN cumulative_percentage <= 80 THEN 1 END) AS regions_to_80
+        -- Number of regions needed to reach 80%
+        COUNT(CASE WHEN cumulative_percentage <= 80 THEN 1 END) AS regions_to_80
 
-    FROM region_metrics
-    GROUP BY order_year
+    FROM region_metrics
+    GROUP BY order_year
 )
 
 SELECT
-    order_year,
-    ROUND(top1_share, 2) AS top1_share,
-    ROUND(top2_share, 2) AS top2_share,
-    regions_to_80,
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    regions_to_80,
 
-    CASE
-        WHEN top1_share > 50 THEN 'High Dependency Risk'
-        WHEN top2_share > 80 THEN 'Moderate Dependency Risk'
-        ELSE 'Low Dependency Risk'
-    END AS dependency_risk_level
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 80 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
 
 FROM risk_summary
 ORDER BY order_year;
@@ -1333,63 +1333,63 @@ ORDER BY order_year;
 
 
 WITH segment_sales AS (
-    SELECT 
-        strftime('%Y', order_date) AS order_year,
-        segment,
-        SUM(sales) AS segment_sales
-    FROM superstore_clean
-    GROUP BY strftime('%Y', order_date), segment
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        segment,
+        SUM(sales) AS segment_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date), segment
 ),
 
 overall_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime('%Y', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
 ),
 
 segment_metrics AS (
-    SELECT
-        s.order_year,
-        s.segment,
-        s.segment_sales,
-        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
-        ROW_NUMBER() OVER (
-            PARTITION BY s.order_year
-            ORDER BY s.segment_sales DESC
-        ) AS segment_rank,
-        SUM((s.segment_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY s.order_year
-                ORDER BY s.segment_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM segment_sales s
-    JOIN overall_sales o
-        ON s.order_year = o.order_year
+    SELECT
+        s.order_year,
+        s.segment,
+        s.segment_sales,
+        (s.segment_sales * 100.0) / o.overall_sales AS segment_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY s.order_year
+            ORDER BY s.segment_sales DESC
+        ) AS segment_rank,
+        SUM((s.segment_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY s.order_year
+                ORDER BY s.segment_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM segment_sales s
+    JOIN overall_sales o
+        ON s.order_year = o.order_year
 ),
 
 risk_summary AS (
-    SELECT
-        order_year,
-        MAX(CASE WHEN segment_rank = 1 THEN segment_percentage END) AS top1_share,
-        SUM(CASE WHEN segment_rank <= 2 THEN segment_percentage END) AS top2_share,
-        MIN(CASE WHEN cumulative_percentage >= 80 THEN segment_rank END) AS segments_to_80
-    FROM segment_metrics
-    GROUP BY order_year
+    SELECT
+        order_year,
+        MAX(CASE WHEN segment_rank = 1 THEN segment_percentage END) AS top1_share,
+        SUM(CASE WHEN segment_rank <= 2 THEN segment_percentage END) AS top2_share,
+        MIN(CASE WHEN cumulative_percentage >= 80 THEN segment_rank END) AS segments_to_80
+    FROM segment_metrics
+    GROUP BY order_year
 )
 
 SELECT
-    order_year,
-    ROUND(top1_share, 2) AS top1_share,
-    ROUND(top2_share, 2) AS top2_share,
-    segments_to_80,
-    CASE
-        WHEN top1_share > 50 THEN 'High Dependency Risk'
-        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
-        ELSE 'Low Dependency Risk'
-    END AS dependency_risk_level
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    segments_to_80,
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
 FROM risk_summary
 ORDER BY order_year;
 
@@ -1398,71 +1398,1000 @@ ORDER BY order_year;
 
 
 
---Category Level Risk Detection 
+--Category Level Risk Detection
 
 
 
 
 WITH category_sales AS (
-    SELECT 
-        strftime('%Y', order_date) AS order_year,
-        category,
-        SUM(sales) AS category_sales
-    FROM superstore_clean
-    GROUP BY strftime('%Y', order_date), category
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        category,
+        SUM(sales) AS category_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date), category
 ),
 
 overall_sales AS (
-    SELECT
-        strftime('%Y', order_date) AS order_year,
-        SUM(sales) AS overall_sales
-    FROM superstore_clean
-    GROUP BY strftime('%Y', order_date)
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales) AS overall_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
 ),
 
 category_metrics AS (
-    SELECT
-        c.order_year,
-        c.category,
-        c.category_sales,
-        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
-        ROW_NUMBER() OVER (
-            PARTITION BY c.order_year
-            ORDER BY c.category_sales DESC
-        ) AS category_rank,
-        SUM((c.category_sales * 100.0) / o.overall_sales)
-            OVER (
-                PARTITION BY c.order_year
-                ORDER BY c.category_sales DESC
-                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cumulative_percentage
-    FROM category_sales c
-    JOIN overall_sales o
-        ON c.order_year = o.order_year
+    SELECT
+        c.order_year,
+        c.category,
+        c.category_sales,
+        (c.category_sales * 100.0) / o.overall_sales AS category_percentage,
+        ROW_NUMBER() OVER (
+            PARTITION BY c.order_year
+            ORDER BY c.category_sales DESC
+        ) AS category_rank,
+        SUM((c.category_sales * 100.0) / o.overall_sales)
+            OVER (
+                PARTITION BY c.order_year
+                ORDER BY c.category_sales DESC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cumulative_percentage
+    FROM category_sales c
+    JOIN overall_sales o
+        ON c.order_year = o.order_year
 ),
 
 risk_summary AS (
+    SELECT
+        order_year,
+        MAX(CASE WHEN category_rank = 1 THEN category_percentage END) AS top1_share,
+        SUM(CASE WHEN category_rank <= 2 THEN category_percentage END) AS top2_share,
+        MIN(CASE WHEN cumulative_percentage >= 80 THEN category_rank END) AS categories_to_80
+    FROM category_metrics
+    GROUP BY order_year
+)
+
+SELECT
+    order_year,
+    ROUND(top1_share, 2) AS top1_share,
+    ROUND(top2_share, 2) AS top2_share,
+    categories_to_80,
+    CASE
+        WHEN top1_share > 50 THEN 'High Dependency Risk'
+        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
+        ELSE 'Low Dependency Risk'
+    END AS dependency_risk_level
+FROM risk_summary
+ORDER BY order_year;
+
+
+
+
+
+
+
+--===========================================================================================================
+ 					--Ranking And Advanced Insights
+ 					--Goal - To Show Advanced Analytical Insights
+--===========================================================================================================
+
+ 						  --==========Ranking By Sales===========
+
+--Rank Categories Within Each Region By Sales , Profit & Profit-Margin
+
+
+WITH regional_metrics AS (
+    SELECT**
+
+       	region,
+
+        **category,**
+
+        **SUM(sales) AS total\_sales,**
+
+        **SUM(profit) AS total\_profit,**
+
+        **ROUND((SUM(profit) \* 100.0) / SUM(sales), 2) AS profit\_margin**
+
+    **FROM superstore\_clean**
+
+    **GROUP BY region, category**
+
+),
+
+regional_ranking AS (
+    **SELECT**
+
+        **region,**
+
+        **category,**
+
+        **total\_sales,**
+
+        **total\_profit,**
+
+        **profit\_margin,**
+
+
+
+        **DENSE\_RANK() OVER(**
+
+            **PARTITION BY region**
+
+            **ORDER BY total\_sales DESC**
+
+        **) AS sales\_rank,**
+
+
+
+        **DENSE\_RANK() OVER(**
+
+            **PARTITION BY region**
+
+            **ORDER BY total\_profit DESC**
+
+        **) AS profit\_rank,**
+
+
+
+        **DENSE\_RANK() OVER(**
+
+            **PARTITION BY region**
+
+            **ORDER BY profit\_margin DESC**
+
+        **) AS profit\_margin\_rank**
+
+
+
+    **FROM regional\_metrics**
+
+)
+
+SELECT *
+FROM regional_ranking
+ORDER BY region, sales_rank;
+
+
+
+
+--=================================================================================================================================================
+ 							--==========Ranking By Category=======
+
+--Rank subcategory (products) Within Each Category By Sales , Profit And Profit-Margin
+
+
+WITH metrices AS (
+    **SELECT** 
+
+        **sub\_category,**
+
+        **category,**
+
+        **SUM(sales) AS total\_sales,**
+
+        **SUM(profit) AS total\_profit,**
+
+        **ROUND((SUM(profit) \* 100.0) / SUM(sales), 2) AS profit\_margin**
+
+    **FROM superstore\_clean**
+
+    **GROUP BY category, sub\_category**
+
+),
+
+ranking AS (
+    **SELECT**
+
+        **sub\_category,**
+
+        **category,**
+
+        **total\_sales,**
+
+        **total\_profit,**
+
+        **profit\_margin,**
+
+        **DENSE\_RANK() OVER (**
+
+            **PARTITION BY category**
+
+            **ORDER BY total\_sales DESC**
+
+        **) AS sales\_rank,**
+
+        **DENSE\_RANK() OVER (**
+
+            **PARTITION BY category**
+
+            **ORDER BY total\_profit DESC**
+
+        **) AS profit\_rank,**
+
+        **DENSE\_RANK() OVER (**
+
+            **PARTITION BY category**
+
+            **ORDER BY profit\_margin DESC**
+
+        **) AS profit\_margin\_rank**
+
+    **FROM metrices**
+
+)
+
+SELECT *
+FROM ranking
+ORDER BY category, sales_rank;
+
+
+
+
+
+
+--===============================================================================================================
+
+
+		**--===================Identifying Top 10% Revenue Contributors===================**
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH product_sales AS (
+    SELECT
+        product_name,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY product_name
+),
+
+ranked_products AS (
+    SELECT
+        product_name,
+        total_sales,
+        ROW_NUMBER() OVER (ORDER BY total_sales DESC) AS sales_rank
+    FROM product_sales
+),
+
+product_count AS (
+    SELECT
+        COUNT(*) AS total_products
+    FROM product_sales
+)
+
+SELECT
+    r.product_name,
+    r.total_sales,
+    r.sales_rank,
+    CASE
+        WHEN r.sales_rank <= ROUND(p.total_products * 0.10 + 0.5)
+        THEN 'Top 10% Contributor'
+        ELSE 'Other Products'
+    END AS contributor_type
+FROM ranked_products r
+CROSS JOIN product_count p
+ORDER BY r.sales_rank;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--=============================================================================================================================
+--Compare Revenue vs Profit Contribution  by Region , Category ,  Segment and Products
+--=============================================================================================================================
+
+
+		**--==================== Regional Revenue vs. Profit Contribution By Region ============**
+
+
+
+
+
+
+
+
+
+
+WITH sales_metrics AS (
+    SELECT
+        region,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY region
+),
+
+overall_sales AS (
+    SELECT
+        SUM(sales) AS overall_sales,
+        SUM(profit) AS overall_profit
+    FROM superstore_clean
+),
+
+contribution AS (
+    SELECT
+        region,
+        total_sales,
+        total_profit,
+        ROUND((total_sales * 100.0) / overall_sales, 2) AS revenue_contribution,
+        ROUND((total_profit * 100.0) / overall_profit, 2) AS profit_contribution
+    FROM sales_metrics, overall_sales
+),
+
+comparison AS (
+    SELECT
+        region,
+        revenue_contribution,
+        profit_contribution,
+        revenue_contribution - profit_contribution AS compare_perc
+    FROM contribution
+)
+
+SELECT
+    region,
+    revenue_contribution,
+    profit_contribution,
+    compare_perc,
+    CASE
+        WHEN profit_contribution > revenue_contribution THEN 'High Profit Efficiency'
+        WHEN profit_contribution < revenue_contribution THEN 'Low Profit Efficiency'
+        ELSE 'Balanced'
+    END AS interpretation
+FROM comparison
+ORDER BY profit_contribution DESC, revenue_contribution DESC;
+
+
+
+
+
+ 
+
+
+
+
+ 		--==================== Regional Revenue vs. Profit Contribution By Category ============
+
+
+
+
+
+
+WITH sales_metrics AS (
+    SELECT
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY category
+),
+
+overall_sales AS (
+    SELECT
+        SUM(sales) AS overall_sales,
+        SUM(profit) AS overall_profit
+    FROM superstore_clean
+),
+
+contribution AS (
+    SELECT
+        category,
+        total_sales,
+        total_profit,
+        ROUND((total_sales * 100.0) / overall_sales, 2) AS revenue_contribution,
+        ROUND((total_profit * 100.0) / overall_profit, 2) AS profit_contribution
+    FROM sales_metrics, overall_sales
+),
+
+comparison AS (
+    SELECT
+        category,
+        revenue_contribution,
+        profit_contribution,
+        revenue_contribution - profit_contribution AS compare_perc
+    FROM contribution
+)
+
+SELECT
+    category,
+    revenue_contribution,
+    profit_contribution,
+    compare_perc,
+    CASE
+        WHEN profit_contribution > revenue_contribution THEN 'High Profit Efficiency'
+        WHEN profit_contribution < revenue_contribution THEN 'Low Profit Efficiency'
+        ELSE 'Balanced'
+    END AS interpretation
+FROM comparison
+ORDER BY profit_contribution DESC, revenue_contribution DESC;
+
+
+
+
+
+
+
+
+
+		--==================== Regional Revenue vs. Profit Contribution By Segment ============
+
+WITH sales_metrices AS (
+    SELECT 
+        segment,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY segment
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales,
+        SUM(profit) AS overall_profit
+    FROM superstore_clean
+),
+
+contribution AS (
+    SELECT 
+        s.segment,
+        ROUND((s.total_sales * 100.0) / o.overall_sales, 2) AS revenue_contribution,
+        ROUND((s.total_profit * 100.0) / o.overall_profit, 2) AS profit_contribution
+    FROM sales_metrices AS s
+    CROSS JOIN overall_sales AS o
+),
+
+comparison AS (
+    SELECT 
+        segment,
+        revenue_contribution,
+        profit_contribution,
+        revenue_contribution - profit_contribution AS compare_perc
+    FROM contribution
+)
+
+SELECT 
+    segment,
+    revenue_contribution,
+    profit_contribution,
+    compare_perc,
+    CASE 
+        WHEN profit_contribution > revenue_contribution THEN 'High Profit Efficiency'
+        WHEN profit_contribution < revenue_contribution THEN 'Low Profit Efficiency'
+        ELSE 'Balanced'
+    END AS interpretation
+FROM comparison
+ORDER BY profit_contribution DESC, revenue_contribution DESC;
+
+
+
+
+
+
+			--==================== Regional Revenue vs. Profit Contribution By Sub-Category ============
+
+WITH sales_metrices AS (
+    SELECT 
+        sub_category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY sub_category
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales,
+        SUM(profit) AS overall_profit
+    FROM superstore_clean
+),
+
+contribution AS (
+    SELECT 
+        s.sub_category,
+        ROUND((s.total_sales * 100.0) / o.overall_sales, 2) AS revenue_contribution,
+        ROUND((s.total_profit * 100.0) / o.overall_profit, 2) AS profit_contribution
+    FROM sales_metrices AS s
+    CROSS JOIN overall_sales AS o
+),
+
+comparison AS (
+    SELECT 
+        sub_category,
+        revenue_contribution,
+        profit_contribution,
+        revenue_contribution - profit_contribution AS compare_perc
+    FROM contribution
+)
+
+SELECT 
+    sub_category,
+    revenue_contribution,
+    profit_contribution,
+    compare_perc,
+    CASE 
+        WHEN profit_contribution > revenue_contribution THEN 'High Profit Efficiency'
+        WHEN profit_contribution < revenue_contribution THEN 'Low Profit Efficiency'
+        ELSE 'Balanced'
+    END AS interpretation
+FROM comparison
+ORDER BY profit_contribution DESC, revenue_contribution DESC;
+
+
+
+			
+
+
+
+
+		--==================== Regional Revenue vs. Profit Contribution By Product Name ============
+
+		
+		
+WITH sales_metrices AS (
+    SELECT 
+        product_name,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY product_name
+),
+
+overall_sales AS (
+    SELECT 
+        SUM(sales) AS overall_sales,
+        SUM(profit) AS overall_profit
+    FROM superstore_clean
+),
+
+contribution AS (
+    SELECT 
+        s.product_name,
+        ROUND((s.total_sales * 100.0) / o.overall_sales, 2) AS revenue_contribution,
+        ROUND((s.total_profit * 100.0) / o.overall_profit, 2) AS profit_contribution
+    FROM sales_metrices AS s
+    CROSS JOIN overall_sales AS o
+),
+
+comparison AS (
+    SELECT 
+        product_name,
+        revenue_contribution,
+        profit_contribution,
+        revenue_contribution - profit_contribution AS compare_perc
+    FROM contribution
+)
+
+SELECT 
+    product_name,
+    revenue_contribution,
+    profit_contribution,
+    compare_perc,
+    CASE 
+        WHEN profit_contribution > revenue_contribution THEN 'High Profit Efficiency'
+        WHEN profit_contribution < revenue_contribution THEN 'Low Profit Efficiency'
+        ELSE 'Balanced'
+    END AS interpretation
+FROM comparison
+ORDER BY profit_contribution DESC, revenue_contribution DESC;
+
+
+
+--=====================================================================================================================
+			Detect Negative Margin BY Region , Category , Segments 
+--=====================================================================================================================
+
+		--============Regional Level Negative Margin===========
+
+
+WITH sales_metrices AS (
+    SELECT 
+        region,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY region
+),
+
+regional_profit_margin AS (
+    SELECT  
+        region,
+        total_sales,
+        total_profit,
+        ROUND((total_profit * 100.0) / total_sales, 2) AS profit_margin
+    FROM sales_metrices
+),
+
+checking AS (
+    SELECT 
+        region,
+        total_sales,
+        total_profit,
+        profit_margin,
+        CASE
+            WHEN profit_margin < 0 THEN 'Loss Making Region'
+            ELSE 'Profit Making Region'
+        END AS interpretation
+    FROM regional_profit_margin
+)
+
+SELECT *
+FROM checking
+ORDER BY region DESC, profit_margin DESC;
+
+
+
+
+
+	 --================Category Level Negative Margin================
+
+
+WITH sales_metrices AS (
+    SELECT 
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY category
+),
+
+category_profit_margin AS (
+    SELECT  
+        category,
+        total_sales,
+        total_profit,
+        ROUND((total_profit * 100.0) / total_sales, 2) AS profit_margin
+    FROM sales_metrices
+),
+
+checking AS (
+    SELECT 
+        category,
+        total_sales,
+        total_profit,
+        profit_margin,
+        CASE
+            WHEN profit_margin < 0 THEN 'Loss Making Category'
+            ELSE 'Profit Making Category'
+        END AS interpretation
+    FROM category_profit_margin
+)
+
+SELECT *
+FROM checking
+ORDER BY category DESC, profit_margin DESC;
+
+
+
+
+
+		--=============Segment Level Negative Margin==============
+
+
+WITH sales_metrices AS (
+    SELECT 
+        segment,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY segment
+),
+
+segment_profit_margin AS (
+    SELECT  
+        segment,
+        total_sales,
+        total_profit,
+        ROUND((total_profit * 100.0) / total_sales, 2) AS profit_margin
+    FROM sales_metrices
+),
+
+checking AS (
+    SELECT 
+        segment,
+        total_sales,
+        total_profit,
+        profit_margin,
+        CASE
+            WHEN profit_margin < 0 THEN 'Loss Making Segment'
+            ELSE 'Profit Making Segment'
+        END AS interpretation
+    FROM segment_profit_margin
+)
+
+SELECT *
+FROM checking
+ORDER BY segment DESC, profit_margin DESC;
+
+
+
+
+
+
+--=================================================================================================================
+					--Growth Acceleration or Decline Detection
+--=================================================================================================================
+
+
+
+
+
+-- Regional Growth Acceleration or Decline Detection
+
+WITH monthly_region_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        region,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY order_year, order_month, region
+),
+
+growth_calc AS (
     SELECT
         order_year,
-        MAX(CASE WHEN category_rank = 1 THEN category_percentage END) AS top1_share,
-        SUM(CASE WHEN category_rank <= 2 THEN category_percentage END) AS top2_share,
-        MIN(CASE WHEN cumulative_percentage >= 80 THEN category_rank END) AS categories_to_80
-    FROM category_metrics
-    GROUP BY order_year
+        order_month,
+        region,
+        monthly_sales,
+        LAG(monthly_sales) OVER(
+            PARTITION BY region
+            ORDER BY order_year, order_month
+        ) AS prev_sales
+    FROM monthly_region_sales
+),
+
+growth_rate AS (
+    SELECT
+        *,
+        (monthly_sales - prev_sales) * 1.0 / prev_sales AS growth_rate
+    FROM growth_calc
 )
 
 SELECT
     order_year,
-    ROUND(top1_share, 2) AS top1_share,
-    ROUND(top2_share, 2) AS top2_share,
-    categories_to_80,
+    order_month,
+    region,
+    monthly_sales,
+    growth_rate,
+    growth_rate -
+    LAG(growth_rate) OVER(
+        PARTITION BY region
+        ORDER BY order_year, order_month
+    ) AS growth_change,
     CASE
-        WHEN top1_share > 50 THEN 'High Dependency Risk'
-        WHEN top2_share > 75 THEN 'Moderate Dependency Risk'
-        ELSE 'Low Dependency Risk'
-    END AS dependency_risk_level
-FROM risk_summary
-ORDER BY order_year;
+        WHEN growth_rate < 0 THEN 'Decline'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY region
+                ORDER BY order_year, order_month
+             ) > 0 THEN 'Accelerating Growth'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY region
+                ORDER BY order_year, order_month
+             ) < 0 THEN 'Decelerating Growth'
+        ELSE 'Stable'
+    END AS growth_trend
+FROM growth_rate
+ORDER BY region, order_year, order_month;
+
+
+
+
+
+--Category Growth Acceleration or Decline Detection
+
+WITH monthly_category_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        category,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY order_year, order_month, category
+),
+
+growth_calc AS (
+    SELECT
+        order_year,
+        order_month,
+        category,
+        monthly_sales,
+        LAG(monthly_sales) OVER(
+            PARTITION BY category
+            ORDER BY order_year, order_month
+        ) AS prev_sales
+    FROM monthly_category_sales
+),
+
+growth_rate AS (
+    SELECT
+        *,
+        (monthly_sales - prev_sales) * 1.0 / prev_sales AS growth_rate
+    FROM growth_calc
+)
+
+SELECT
+    order_year,
+    order_month,
+    category,
+    monthly_sales,
+    growth_rate,
+    growth_rate -
+    LAG(growth_rate) OVER(
+        PARTITION BY category
+        ORDER BY order_year, order_month
+    ) AS growth_change,
+    CASE
+        WHEN growth_rate < 0 THEN 'Decline'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY category
+                ORDER BY order_year, order_month
+             ) > 0 THEN 'Accelerating Growth'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY category
+                ORDER BY order_year, order_month
+             ) < 0 THEN 'Decelerating Growth'
+        ELSE 'Stable'
+    END AS growth_trend
+FROM growth_rate
+ORDER BY category, order_year, order_month;
+
+
+
+
+
+
+--Segment Growth Acceleration  or  Decline Detection
+
+WITH monthly_segment_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        segment,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY order_year, order_month, segment
+),
+
+growth_calc AS (
+    SELECT
+        order_year,
+        order_month,
+        segment,
+        monthly_sales,
+        LAG(monthly_sales) OVER(
+            PARTITION BY segment
+            ORDER BY order_year, order_month
+        ) AS prev_sales
+    FROM monthly_segment_sales
+),
+
+growth_rate AS (
+    SELECT
+        *,
+        (monthly_sales - prev_sales) * 1.0 / prev_sales AS growth_rate
+    FROM growth_calc
+)
+
+SELECT
+    order_year,
+    order_month,
+    segment,
+    monthly_sales,
+    growth_rate,
+    growth_rate -
+    LAG(growth_rate) OVER(
+        PARTITION BY segment
+        ORDER BY order_year, order_month
+    ) AS growth_change,
+    CASE
+        WHEN growth_rate < 0 THEN 'Decline'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY segment
+                ORDER BY order_year, order_month
+             ) > 0 THEN 'Accelerating Growth'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY segment
+                ORDER BY order_year, order_month
+             ) < 0 THEN 'Decelerating Growth'
+        ELSE 'Stable'
+    END AS growth_trend
+FROM growth_rate
+ORDER BY segment, order_year, order_month;
+
+
+
+
+
+
+--Product Growth Acceleration or Decline Detection
+
+
+
+WITH monthly_product_sales AS (
+    SELECT
+        strftime('%Y', order_date) AS order_year,
+        strftime('%m', order_date) AS order_month,
+        product_name,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY order_year, order_month, product_name
+),
+
+growth_calc AS (
+    SELECT
+        order_year,
+        order_month,
+        product_name,
+        monthly_sales,
+        LAG(monthly_sales) OVER(
+            PARTITION BY product_name
+            ORDER BY order_year, order_month
+        ) AS prev_sales
+    FROM monthly_product_sales
+),
+
+growth_rate AS (
+    SELECT
+        *,
+        (monthly_sales - prev_sales) * 1.0 / prev_sales AS growth_rate
+    FROM growth_calc
+)
+
+SELECT
+    order_year,
+    order_month,
+    product_name,
+    monthly_sales,
+    growth_rate,
+    growth_rate -
+    LAG(growth_rate) OVER(
+        PARTITION BY product_name
+        ORDER BY order_year, order_month
+    ) AS growth_change,
+    CASE
+        WHEN growth_rate < 0 THEN 'Decline'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY product_name
+                ORDER BY order_year, order_month
+             ) > 0 THEN 'Accelerating Growth'
+        WHEN growth_rate -
+             LAG(growth_rate) OVER(
+                PARTITION BY product_name
+                ORDER BY order_year, order_month
+             ) < 0 THEN 'Decelerating Growth'
+        ELSE 'Stable'
+    END AS growth_trend
+FROM growth_rate
+ORDER BY product_name, order_year, order_month;
+
+
 
 
 

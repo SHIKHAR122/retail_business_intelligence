@@ -2,7 +2,7 @@
 
 ---
 
-## 1. Objective
+# 1. Objective
 
 This module focuses on aggregating transactional sales data to generate business-level performance insights. The goal is to analyze revenue distribution, profitability patterns, contribution dynamics, and identify underperforming segments using structured SQL analysis.
 
@@ -17,11 +17,11 @@ The module transforms row-level transactional data into strategic performance me
 
 ---
 
-## 2. Dataset Overview
+# 2. Dataset Overview
 
 **Source Table:** `superstore_clean`
 
-### Key Columns Used:
+### Key Columns Used
 
 * `category`
 * `sub_category`
@@ -190,7 +190,7 @@ Monthly aggregation enables:
 * Volatility Measurement
 * Trend Classification
 
-This phase is fully completed and establishes the time-based performance foundation.
+This phase establishes the time-based performance foundation.
 
 ---
 
@@ -202,14 +202,12 @@ Developed a refined contribution modeling layer to evaluate revenue distribution
 
 The focus was on understanding proportional revenue weight rather than absolute revenue values.
 
-This stage transitioned the module from trend measurement to structural share analysis.
-
 ---
 
 ## 7.2 Contribution Layers Implemented
 
-* Revenue Contribution % by Month (Monthly Share of Annual/Total Revenue)
-* Revenue Contribution % by Segment (Within Month)
+* Revenue Contribution % by Month (Monthly Share of Total Revenue)
+* Revenue Contribution % by Segment
 * Revenue Contribution % by Region
 * Cross-Dimensional Share Analysis (Segment × Month)
 * Revenue Distribution Benchmarking Across Dimensions
@@ -218,7 +216,7 @@ This stage transitioned the module from trend measurement to structural share an
 
 ## 7.3 Analytical Impact
 
-Contribution analysis now enables:
+Contribution analysis enables:
 
 * Identification of revenue concentration risk
 * Detection of dominance shifts over time
@@ -236,11 +234,15 @@ Contribution analysis now enables:
 * Comparative Share Evaluation
 * Controlled Denominator Benchmarking
 
-This phase is fully completed and establishes the structural revenue distribution layer.
+This phase establishes the structural revenue distribution layer.
 
 ---
 
-# 8. Next Analytical Layer – Ranking & Advanced Insights (Upcoming)
+# 8. Ranking & Advanced Insight Analysis (In Progress)
+
+This stage introduces deeper comparative intelligence across multiple business dimensions.
+
+### Analytical Areas Being Developed
 
 * Multi-Dimensional Ranking (Segment × Region × Category)
 * Profitability Efficiency Scoring
@@ -248,14 +250,7 @@ This phase is fully completed and establishes the structural revenue distributio
 * Concentration Risk Scoring
 * Advanced Comparative Benchmarking
 
----
-
-# 9. Analytical Techniques Applied (Consolidated)
-
-* Seasonal Pattern Detection
-* Multi-Year Monthly Averaging
-* Peak vs Off-Season Identification
-* Seasonal Index Modeling
+This layer moves the system from descriptive analysis toward **performance scoring and decision intelligence**.
 
 ---
 
@@ -287,12 +282,15 @@ This phase is fully completed and establishes the structural revenue distributio
 
 # 11. Module 2 Evolution
 
-Module 2 progression:
+Module 2 analytical progression:
 
 Descriptive Aggregation
 → Profitability Evaluation
-→ Comparative Ranking
+→ Comparative Performance Analysis
 → Time-Based Trend Analysis
-→ Revenue Contribution Modeling (Current Stage)
-→ Seasonal Intelligence Layer
+→ Revenue Contribution & Distribution Modeling
+→ Ranking & Advanced Insight Analysis (Current Stage)
 → Forecast-Ready Analytical Foundation
+
+---
+
