@@ -1,0 +1,12 @@
+# Module 3: Customer Intelligence & Behavioral Analytics
+
+This module analyzes customer purchasing behavior using SQL.
+
+Planned analyses include:
+
+1. Customer Lifetime Value (CLV) Analysis
+2. Customer Retention & Repeat Purchase Analysis
+3. RFM Customer Segmentation
+4. Customer Cohort Retention Analysis
+5. Revenue Contribution by Customer Tier
+6. Customer Distribution Across Business Dimensions

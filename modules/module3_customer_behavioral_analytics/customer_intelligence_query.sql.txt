@@ -1,0 +1,12 @@
+-- ==========================================
+-- MODULE 3: CUSTOMER INTELLIGENCE ANALYTICS
+-- ==========================================
+
+-- Queries for the following analyses will be added:
+
+-- 1. Customer Lifetime Value (CLV)
+-- 2. Customer Retention Analysis
+-- 3. RFM Customer Segmentation
+-- 4. Cohort Retention Analysis
+-- 5. Customer Tier Revenue Contribution
+-- 6. Entity-wise Customer Distribution
