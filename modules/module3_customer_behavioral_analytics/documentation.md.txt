@@ -1,5 +1,5 @@
-# Module 3: Customer Intelligence & Behavioral Analytics
 
+# Module 3: Customer Intelligence & Behavioral Analytics
 ---
 
 # 1. Objective
@@ -123,7 +123,7 @@ This phase establishes the **customer retention intelligence layer**.
 
 ---
 
-# 5. RFM Customer Segmentation (In Progress)
+# 5. RFM Customer Segmentation (Completed)
 
 ## 5.1 Objective
 
@@ -133,7 +133,7 @@ RFM segmentation categorizes customers based on how recently they purchased, how
 
 ---
 
-## 5.2 RFM Metrics Being Computed
+## 5.2 RFM Metrics Computed
 
 * **Recency** – Days since last purchase
 * **Frequency** – Total number of orders
@@ -143,7 +143,7 @@ RFM segmentation categorizes customers based on how recently they purchased, how
 
 ## 5.3 Segmentation Framework
 
-Customers will be classified into behavioral segments such as:
+Customers are classified into behavioral segments such as:
 
 * High-Value Customers
 * Loyal Customers
@@ -173,20 +173,11 @@ RFM segmentation enables:
 * Conditional Segment Classification
 * Multi-Metric Behavioral Modeling
 
-This phase introduces the **customer behavioral intelligence layer**.
+This phase establishes the **customer behavioral intelligence layer**.
 
 ---
 
-# 6. Upcoming Analytical Layers
-
-* Customer Cohort Retention Analysis
-* Revenue Contribution by Customer Tier
-* Customer Distribution Across Business Dimensions
-* Long-Term Customer Behavior Trends
-
----
-
-# 7. Analytical Techniques Applied (Consolidated)
+# 6. Analytical Techniques Applied (Consolidated)
 
 * Customer-Level Aggregations
 * Common Table Expressions (CTEs)
@@ -198,7 +189,7 @@ This phase introduces the **customer behavioral intelligence layer**.
 
 ---
 
-# 8. Business Observations (Current)
+# 7. Business Observations (Current)
 
 * Customer revenue contribution is highly concentrated among a smaller subset of customers.
 * Repeat purchasing behavior significantly influences total revenue generation.
@@ -207,16 +198,15 @@ This phase introduces the **customer behavioral intelligence layer**.
 
 ---
 
-# 9. Module 3 Evolution
+# 8. Module 3 Evolution
 
 Module 3 analytical progression:
 
 Customer Value Analysis
 → Customer Retention Intelligence
 → Repeat Purchase Behavior Evaluation
-→ RFM Behavioral Segmentation (Current Stage)
-→ Customer Cohort Retention Modeling
-→ Customer Tier Contribution Analysis
+→ RFM Behavioral Segmentation
 → Advanced Customer Intelligence Layer
 
 ---
+

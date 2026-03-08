@@ -426,6 +426,146 @@ ORDER BY days_since_last_purchase DESC;
 
 
 
+--At-risk customers
+
+
+
+WITH customer_metrices AS (
+    SELECT 
+        customer_id,
+        customer_name,
+        MAX(order_date) AS last_orderdate
+    FROM superstore_clean
+    GROUP BY customer_id, customer_name
+),
+
+recent_date AS (        -- recent date according to the dataset
+    SELECT 
+        MAX(order_date) AS dataset_recent_date
+    FROM superstore_clean
+)
+
+SELECT
+    cm.customer_id,
+    cm.customer_name,
+    cm.last_orderdate,
+    rd.dataset_recent_date,
+    ROUND(
+        julianday(rd.dataset_recent_date) - julianday(cm.last_orderdate),
+        2
+    ) AS days_since_last_purchase,
+    CASE 
+        WHEN ROUND(julianday(rd.dataset_recent_date) - julianday(cm.last_orderdate), 2) >= 0
+             AND ROUND(julianday(rd.dataset_recent_date) - julianday(cm.last_orderdate), 2) <= 30 
+        THEN 'Active Customer'
+        
+        WHEN ROUND(julianday(rd.dataset_recent_date) - julianday(cm.last_orderdate), 2) > 31
+             AND ROUND(julianday(rd.dataset_recent_date) - julianday(cm.last_orderdate), 2) <= 90 
+        THEN 'At Risk'
+        
+        ELSE 'Inactive'
+    END AS customer_status
+FROM customer_metrices AS cm
+CROSS JOIN recent_date AS rd
+ORDER BY days_since_last_purchase;
+
+
+
+
+
+
+--Low engagement customers
+
+
+
+WITH customer_activity AS (
+    SELECT
+        customer_id,
+        customer_name,
+        COUNT(DISTINCT order_id) AS total_orders,
+        SUM(sales) AS total_spending
+    FROM superstore_clean
+    GROUP BY customer_id, customer_name
+),
+benchmark AS (
+    SELECT
+        AVG(total_orders) AS avg_orders,
+        AVG(total_spending) AS avg_spending
+    FROM customer_activity
+)
+SELECT
+    ca.customer_id,
+    ca.customer_name,
+    ca.total_orders,
+    ca.total_spending,
+    b.avg_orders,
+    b.avg_spending,
+    CASE
+        WHEN ca.total_orders < b.avg_orders
+             AND ca.total_spending < b.avg_spending
+        THEN 'Low Engagement Customer'
+        
+        WHEN ca.total_orders >= b.avg_orders
+             AND ca.total_spending >= b.avg_spending
+        THEN 'Highly Engaged Customer'
+        
+        ELSE 'Moderate Engagement'
+    END AS customer_segment
+FROM customer_activity AS ca
+CROSS JOIN benchmark AS b
+ORDER BY ca.total_spending DESC;
+
+
+
+
+--Insights Generated:
+--Identify the most valuable customer groups
+--Detect potential churn customers
+--Understand spending patterns
+
+
+
+
+
+
+
+--=======================================================================================================================================================================================
+								Customer Cohort Retention Analysis
+						Goal- Analyze customer retention patterns by grouping customers based on their first purchase period.
+
+--=======================================================================================================================================================================================
+
+
+
+
+--Customer cohort month
+
+
+WITH first_purchase_date AS (
+    SELECT
+        customer_id,
+        MIN(order_date) AS first_order_date,
+        strftime('%Y', MIN(order_date)) AS cohort_year,
+        strftime('%m', MIN(order_date)) AS cohort_month
+    FROM superstore_clean
+    GROUP BY customer_id
+)
+
+SELECT
+    s.customer_id,
+    s.order_date,
+    f.first_order_date,
+
+    (
+        (CAST(strftime('%Y', s.order_date) AS INTEGER) - CAST(f.cohort_year AS INTEGER)) * 12
+        +
+        (CAST(strftime('%m', s.order_date) AS INTEGER) - CAST(f.cohort_month AS INTEGER))
+        + 1
+    ) AS cohort_index
+
+FROM superstore_clean s
+JOIN first_purchase_date f
+ON s.customer_id = f.customer_id;
 
 
 
@@ -437,3 +577,300 @@ ORDER BY days_since_last_purchase DESC;
 
 
 
+
+
+
+--Retention rate across subsequent months
+
+
+WITH first_purchase AS (
+    SELECT
+        customer_id,
+        MIN(order_date) AS first_purchase_date
+    FROM superstore_clean
+    GROUP BY customer_id
+),
+
+cohort_table AS (
+    SELECT
+        customer_id,
+        strftime('%Y-%m', first_purchase_date) AS cohort_month
+    FROM first_purchase
+),
+
+customer_orders AS (
+    SELECT
+        s.customer_id,
+        s.order_date,
+        c.cohort_month,
+        strftime('%Y-%m', s.order_date) AS order_month
+    FROM superstore_clean s
+    JOIN cohort_table c
+    ON s.customer_id = c.customer_id
+),
+
+cohort_index_table AS (
+    SELECT
+        customer_id,
+        cohort_month,
+        order_month,
+
+        (
+        (CAST(strftime('%Y', order_date) AS INTEGER) - 
+         CAST(substr(cohort_month,1,4) AS INTEGER)) * 12
+        +
+        (CAST(strftime('%m', order_date) AS INTEGER) - 
+         CAST(substr(cohort_month,6,2) AS INTEGER))
+        + 1
+        ) AS cohort_index
+
+    FROM customer_orders
+),
+
+cohort_counts AS (
+    SELECT
+        cohort_month,
+        cohort_index,
+        COUNT(DISTINCT customer_id) AS num_customers
+    FROM cohort_index_table
+    GROUP BY cohort_month, cohort_index
+)
+
+SELECT
+    cohort_month,
+    cohort_index,
+    num_customers,
+
+    FIRST_VALUE(num_customers) OVER
+        (PARTITION BY cohort_month ORDER BY cohort_index) AS cohort_size,
+
+    ROUND(
+        num_customers * 1.0 /
+        FIRST_VALUE(num_customers) OVER
+        (PARTITION BY cohort_month ORDER BY cohort_index),
+    2) AS retention_rate
+
+FROM cohort_counts
+ORDER BY cohort_month, cohort_index;
+
+
+
+
+
+--Customer activity trend over time
+
+
+WITH first_purchase AS (
+    SELECT
+        customer_id,
+        MIN(order_date) AS first_purchase_date
+    FROM superstore_clean
+    GROUP BY customer_id
+),
+
+monthly_activity AS (
+    SELECT
+        strftime('%Y-%m', order_date) AS order_month,
+        customer_id
+    FROM superstore_clean
+),
+
+new_customers AS (
+    SELECT
+        strftime('%Y-%m', first_purchase_date) AS order_month,
+        COUNT(customer_id) AS new_customers
+    FROM first_purchase
+    GROUP BY order_month
+),
+
+active_customers AS (
+    SELECT
+        order_month,
+        COUNT(DISTINCT customer_id) AS active_customers
+    FROM monthly_activity
+    GROUP BY order_month
+)
+
+SELECT
+    a.order_month,
+    a.active_customers,
+    n.new_customers,
+    (a.active_customers - n.new_customers) AS returning_customers
+FROM active_customers a
+LEFT JOIN new_customers n
+ON a.order_month = n.order_month
+ORDER BY a.order_month;
+
+
+
+
+
+
+
+
+--Insights Generated:
+--Identify periods with strong customer acquisition
+--Understand long-term retention trends
+--Evaluate customer lifecycle behavior
+
+
+
+
+
+
+
+
+
+
+--=============================================================================================================================================================================
+							Revenue Contribution by Customer Tier
+					          Goal-Classify customers into tiers based on revenue contribution.
+
+--=============================================================================================================================================================================
+
+
+
+
+
+
+
+--Classify customers into tiers based on revenue contribution.
+
+
+
+
+WITH customer_sales AS (
+    SELECT 
+        customer_id,
+        SUM(sales) AS total_revenue
+    FROM superstore_clean
+    GROUP BY customer_id
+),
+customer_rank AS (
+    SELECT 
+        customer_id,
+        total_revenue,
+        DENSE_RANK() OVER (ORDER BY total_revenue DESC) AS ranking,
+        PERCENT_RANK() OVER (ORDER BY total_revenue DESC) AS percentile_rank
+    FROM customer_sales
+),
+customer_tiers AS (
+    SELECT
+        customer_id,
+        total_revenue,
+        ranking,
+        percentile_rank,
+
+        CASE 
+            WHEN percentile_rank <= 0.10 THEN 'Platinum'
+            WHEN percentile_rank <= 0.30 THEN 'Gold'
+            WHEN percentile_rank <= 0.70 THEN 'Silver'
+            ELSE 'Bronze'
+        END AS customer_tier
+
+    FROM customer_rank
+)
+
+SELECT
+    customer_tier,
+    COUNT(customer_id) AS total_customers,
+    SUM(total_revenue) AS total_revenue
+FROM customer_tiers
+GROUP BY customer_tier
+ORDER BY total_revenue DESC;
+
+
+
+
+
+--Insights Generated:
+--Identify high-value revenue drivers
+--Understand revenue concentration
+--Detect customer dependency risk
+
+
+
+
+
+
+
+
+--============================================================================================================================================================================
+							Customer Distribution Across Business Dimensions
+							
+                                              Goal - Analyze how customers are distributed across key business entities.
+--============================================================================================================================================================================
+
+
+
+
+
+
+--Customer Distribution Across Region 
+
+
+SELECT
+    region,
+    COUNT(DISTINCT customer_id) AS total_customers
+FROM superstore_clean
+GROUP BY region
+ORDER BY total_customers DESC;
+
+
+
+
+----Customer Distribution Across Category
+
+
+SELECT
+    category,
+    COUNT(DISTINCT customer_id) AS total_customers
+FROM superstore_clean
+GROUP BY category
+ORDER BY total_customers DESC;
+
+
+
+
+
+--Customer Distribution Across Segment
+
+
+
+SELECT
+    segment,
+    COUNT(DISTINCT customer_id) AS total_customers
+FROM superstore_clean
+GROUP BY segment
+ORDER BY total_customers DESC;
+
+
+
+
+--Customer Distribution Across sub-category
+
+
+SELECT
+    sub_category,
+    COUNT(DISTINCT customer_id) AS total_customers
+FROM superstore_clean
+GROUP BY sub_category
+ORDER BY total_customers DESC;
+
+
+
+
+
+
+
+--Insights Generated:
+--Identify regions with the highest customer base
+--Detect segments driving customer growth
+--Understand category preference patterns
+
+
+
+
+
+
+============================================================================================================================================================================================
