@@ -19,6 +19,80 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 
 ---
 
+# Business Questions Answered
+
+This BI system answers several important retail analytics questions.
+
+## Revenue & Profitability
+
+* Which product categories generate the most revenue?
+* Which categories produce the highest profit margins?
+* Are there categories with high sales but low profitability?
+* Which sub-categories operate at a loss?
+
+## Regional Performance
+
+* Which regions generate the highest revenue?
+* Which regions produce the highest profit margins?
+* Where do revenue and profitability diverge?
+
+## Customer Segmentation
+
+* Who are the highest value customers?
+* Which customers generate the highest lifetime revenue?
+* Which customers purchase frequently?
+* Which customers are at risk of churn?
+
+## Growth & Trend Analysis
+
+* How does revenue evolve month to month?
+* Which customer segments are growing the fastest?
+* Does revenue growth translate into profit growth?
+
+## Revenue Distribution
+
+* How concentrated is revenue across regions and segments?
+* Which segments drive the majority of revenue?
+* Is the business dependent on specific segments?
+
+---
+
+# Project Architecture
+
+```
+Raw Transaction Data
+        │
+        ▼
+Module 1: Data Cleaning
+        │
+        ▼
+Cleaned Analytical Dataset
+        │
+        ▼
+Module 2: Sales & Profit Analysis
+        │
+        ├── Category Performance
+        ├── Regional Performance
+        ├── Segment Growth Analysis
+        ├── Monthly Trend Analysis
+        └── Revenue Distribution
+        │
+        ▼
+Module 3: Customer Intelligence
+        │
+        ├── Customer Lifetime Value
+        ├── Retention Analysis
+        └── RFM Segmentation
+        │
+        ▼
+Advanced Insight Layer
+        │
+        ▼
+Future Dashboard Layer
+```
+
+---
+
 # Project Structure
 
 1. Data Preparation
@@ -28,25 +102,28 @@ All analysis is modular, documented, and designed to reflect practical BI workfl
 5. Monthly Trend Analysis (Completed)
 6. Revenue Contribution and Distribution Analysis (Completed)
 7. Ranking and Advanced Insight Analysis (In Progress)
-8. Customer Intelligence & Behavioral Analytics (In Progress)
-9. Dashboard Layer (Upcoming)
+8. Customer Intelligence & Behavioral Analytics (Completed)
+9. Product Performance Analysis (Upcoming)
+10. Dashboard Layer (Upcoming)
 
 ---
 
 # Module 1: Data Cleaning (`module1_data_cleaning`)
+
+Tasks performed:
 
 * Standardized raw transactional data
 * Resolved missing and inconsistent values
 * Structured dataset for downstream analysis
 * Validated revenue and profit fields
 
-Result: Clean, analysis-ready dataset.
+**Result:** Clean and analysis-ready dataset.
 
 ---
 
 # Module 2: Sales, Profit and Growth Analysis (`module2_sales_aggregate`)
 
-This module expands beyond simple aggregation into profitability benchmarking, structural distribution analysis, and advanced performance intelligence.
+This module develops core business performance intelligence.
 
 ---
 
@@ -74,85 +151,79 @@ This module expands beyond simple aggregation into profitability benchmarking, s
 
 ## Segment-Level Performance and Growth Analysis (Completed)
 
-Time-based and structural evaluation using Order Date.
+Time-based evaluation using order date.
 
 * Total Sales by Segment
 * Total Profit by Segment
 * Profit Margin by Segment
-* Revenue Contribution Percentage by Segment
+* Revenue Contribution Percentage
 * Average Order Value by Segment
 * Segment Ranking by Revenue
 * Segment Ranking by Profitability
 * Annual Sales by Segment
 * Annual Profit by Segment
-* Year-over-Year Sales Growth Percentage
-* Year-over-Year Profit Growth Percentage
-* Overall Multi-Year Growth Comparison
+* Year-over-Year Sales Growth
+* Year-over-Year Profit Growth
+* Multi-Year Growth Comparison
 * Compound Annual Growth Rate per Segment
-
-This phase establishes customer-segmentation intelligence and profitability benchmarking.
 
 ---
 
 ## Monthly Sales Summary (Completed)
 
-Time-series intelligence developed at a monthly level.
+Time-series business intelligence.
 
 * Monthly Sales Aggregation
 * Monthly Profit Aggregation
-* Month-over-Month Growth Percentage
+* Month-over-Month Growth
 * Rolling Trend Evaluation
-* Monthly Performance Trends by Segment
+* Monthly Segment Performance
 * Revenue Momentum Tracking
-
-This phase transitions the system from static analysis to dynamic trend monitoring.
 
 ---
 
 ## Revenue Contribution and Distribution Analysis (Completed)
 
-Structural revenue modeling implemented across business dimensions.
+Structural revenue distribution modeling.
 
 * Revenue Contribution Percentage by Month
-* Revenue Contribution Percentage by Segment
-* Revenue Contribution Percentage by Region
-* Cross-Dimensional Share Analysis (Segment and Month)
+* Revenue Contribution by Segment
+* Revenue Contribution by Region
+* Cross-Dimensional Share Analysis
 * Revenue Distribution Benchmarking
 * Structural Dependency Assessment
-
-This phase establishes proportional revenue intelligence and distribution benchmarking.
 
 ---
 
 ## Ranking and Advanced Insight Analysis (In Progress)
 
-Currently building a deeper comparative intelligence layer focused on:
+Building deeper comparative intelligence:
 
-* Multi-Dimensional Ranking (Segment by Region by Category)
+* Multi-Dimensional Ranking (Segment × Region × Category)
 * Profitability Efficiency Ranking
 * Revenue vs Margin Divergence Analysis
 * Concentration Risk Evaluation
-* Advanced Comparative Benchmarking Models
-
-This phase elevates the system from descriptive analytics to structured performance scoring and insight prioritization.
+* Comparative Benchmarking Models
 
 ---
 
-# Module 3: Customer Intelligence & Behavioral Analytics (`module3_customer_intelligence`)
+# Module 3: Customer Intelligence (`module3_customer_intelligence`)
 
-This module focuses on analyzing customer purchasing behavior to generate insights about customer value, retention patterns, and behavioral segmentation.
+Focus: understanding **customer purchasing behavior and long-term value**.
 
 ---
 
 ## Customer Lifetime Value (CLV) Analysis (Completed)
 
+Metrics calculated:
+
 * Total Revenue per Customer
 * Total Profit per Customer
 * Total Orders per Customer
-* Average Order Value per Customer
+* Average Order Value
 * Estimated Customer Lifetime Value
 
-This phase identifies high-value customers and quantifies their long-term revenue contribution.
+Purpose: identify **high-value customers** and revenue concentration.
 
 ---
 
@@ -161,32 +232,32 @@ This phase identifies high-value customers and quantifies their long-term revenu
 * Total Orders per Customer
 * Repeat Purchase Detection
 * Unique vs Returning Customer Analysis
-* Customer Purchase Frequency
-* Retention Rate Evaluation
+* Purchase Frequency
+* Retention Behavior Patterns
 
-This phase establishes customer loyalty and engagement insights.
+Purpose: measure **customer loyalty and engagement**.
 
 ---
 
-## RFM Customer Segmentation (In Progress)
+## RFM Customer Segmentation (Completed)
 
-Developing behavioral customer segmentation using the **Recency–Frequency–Monetary (RFM)** framework.
+Customer segmentation using the **Recency–Frequency–Monetary model**.
 
-Metrics being implemented:
+Metrics used:
 
-* Recency (Days since last purchase)
-* Frequency (Total orders per customer)
-* Monetary Value (Total revenue generated by customer)
+* **Recency:** Days since last purchase
+* **Frequency:** Number of orders
+* **Monetary:** Total revenue generated
 
-The goal is to classify customers into behavioral segments such as:
+Customer groups identified:
 
-* High-Value Customers
+* High Value Customers
 * Loyal Customers
 * Potential Loyalists
-* At-Risk Customers
+* At Risk Customers
 * Dormant Customers
 
-This phase introduces structured **customer behavioral intelligence and segmentation modeling**.
+Purpose: build **behavior-based customer intelligence**.
 
 ---
 
@@ -197,53 +268,55 @@ This phase introduces structured **customer behavioral intelligence and segmenta
 * Profit Margin
 * Revenue Share
 * Performance Rankings
-* Growth Rates (Year-over-Year, Compound Annual, Month-over-Month)
+* Growth Rates (YoY & MoM)
 * Average Order Value
 * Monthly Trend Indicators
 * Revenue Distribution Metrics
 * Customer Lifetime Value
 * Customer Retention Metrics
+* Customer Behavioral Segmentation
 
 ---
 
 # Analytical Techniques Used
 
-* GROUP BY Aggregations
-* Common Table Expressions
+* SQL Aggregations (`GROUP BY`)
+* Common Table Expressions (CTE)
 * Window Functions (`DENSE_RANK`, `LAG`)
-* Time-Based Functions (Year and Month Extraction)
-* Ratio and Contribution Calculations
-* Growth Rate Computations
+* Time-Based Analysis
+* Growth Rate Calculations
+* Revenue Contribution Models
 * Conditional Logic (`CASE`)
 * Comparative Benchmarking
 * Rolling Trend Evaluation
-* Multi-Dimensional Ranking Models
-* Behavioral Customer Segmentation
+* Behavioral Segmentation Models
 
 ---
 
 # Business Insights Developed
 
-* Revenue concentration varies significantly across categories.
-* High-revenue categories do not always yield high margins.
-* Certain sub-categories operate at structural losses.
-* Regional profitability differs from revenue scale.
-* Segment growth rates differ despite similar revenue sizes.
-* Revenue growth does not always translate into proportional profit growth.
-* Monthly analysis reveals measurable volatility and momentum shifts.
-* Revenue distribution analysis exposes structural dependency patterns.
-* Customer revenue contribution is concentrated among a smaller subset of customers.
-* Repeat purchasing behavior strongly influences total revenue generation.
+* Revenue concentration differs significantly across product categories.
+* High revenue categories do not always produce high margins.
+* Some sub-categories operate at structural losses.
+* Regional revenue scale does not always correspond to profitability.
+* Segment growth rates vary significantly.
+* Revenue growth does not always produce proportional profit growth.
+* Monthly trend analysis reveals volatility and momentum shifts.
+* Revenue distribution analysis exposes dependency patterns.
+* Customer revenue contribution is concentrated among a smaller group of buyers.
+* Repeat purchase behavior strongly influences overall revenue generation.
 
 ---
 
 # Upcoming Development Phase
 
-* Complete Advanced Ranking Models
+Next development layer will include:
+
+* Advanced Ranking Models
 * Margin Trend Over Time
-* Cross-Dimensional Analysis (Region by Segment by Category)
-* Customer Cohort Retention Analysis
-* Executive KPI Dashboard Layer
+* Cross-Dimensional Analysis
+* Product Performance Analysis
+* Executive Dashboard Layer
 
 ---
 
@@ -263,29 +336,32 @@ Clone the repository:
 git clone https://github.com/SHIKHAR122/retail_business_intelligence.git
 ```
 
-Execute in order:
+Run modules in order:
 
-* module1_data_cleaning
-* module2_sales_aggregate
-* module3_customer_intelligence
+1. module1_data_cleaning
+2. module2_sales_aggregate
+3. module3_customer_intelligence
 
 ---
 
 # Project Status
 
-Module 1 Completed
-Module 2 Sales, Profit and Segment Analysis Completed
-Monthly Sales Summary Completed
-Revenue Contribution and Distribution Analysis Completed
-Ranking and Advanced Insight Analysis In Progress
+* Module 1 — Data Cleaning — Completed
 
-Module 3 Customer Intelligence Initiated
-Customer Lifetime Value Analysis Completed
-Customer Retention & Repeat Purchase Analysis Completed
-RFM Customer Segmentation In Progress
+* Module 2 — Sales and Profit Analysis — Completed
 
-Currently building advanced comparative intelligence and customer behavioral segmentation before moving toward dashboard integration.
+* Monthly Sales Summary — Completed
 
----
+* Revenue Contribution Analysis — Completed
 
-If you want, I can also show you **one small addition to the README that makes your repo look like a real production analytics project (something most candidates miss).**
+* Ranking & Advanced Insights — In Progress
+
+* Module 3 — Customer Intelligence — Completed
+
+* Customer Lifetime Value Analysis — Completed
+
+* Customer Retention Analysis — Completed
+
+* RFM Customer Segmentation — Completed
+
+Next Phase: **Product Performance Analysis**
