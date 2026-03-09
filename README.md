@@ -14,6 +14,7 @@ The objective is to simulate real-world BI development through a staged analytic
 * Revenue Contribution and Distribution Modeling
 * Ranking and Advanced Insight Analysis
 * Customer Behavioral Intelligence
+* Product Performance Intelligence
 
 All analysis is modular, documented, and designed to reflect practical BI workflows.
 
@@ -48,6 +49,13 @@ This BI system answers several important retail analytics questions.
 * How does revenue evolve month to month?
 * Which customer segments are growing the fastest?
 * Does revenue growth translate into profit growth?
+
+## Product Intelligence
+
+* Which products generate the most revenue?
+* Which products produce the highest profit?
+* Which products are destroying profitability?
+* Do a small number of products drive most business revenue?
 
 ## Revenue Distribution
 
@@ -85,6 +93,15 @@ Module 3: Customer Intelligence
         └── RFM Segmentation
         │
         ▼
+Module 4: Product Performance Intelligence
+        │
+        ├── Best Selling Products
+        ├── Most Profitable Products
+        ├── Product Profit Margin Analysis
+        ├── Negative Margin Detection
+        └── Pareto Product Analysis
+        │
+        ▼
 Advanced Insight Layer
         │
         ▼
@@ -103,7 +120,7 @@ Future Dashboard Layer
 6. Revenue Contribution and Distribution Analysis (Completed)
 7. Ranking and Advanced Insight Analysis (In Progress)
 8. Customer Intelligence & Behavioral Analytics (Completed)
-9. Product Performance Analysis (Upcoming)
+9. Product Performance Intelligence (Completed)
 10. Dashboard Layer (Upcoming)
 
 ---
@@ -261,6 +278,91 @@ Purpose: build **behavior-based customer intelligence**.
 
 ---
 
+# Module 4: Product Performance Intelligence (`module4_product_performance`)
+
+This module evaluates **product-level performance** to identify revenue drivers, profitability leaders, and operational inefficiencies.
+
+---
+
+## Best Selling Products
+
+* Total Revenue per Product
+* Total Quantity Sold
+* Product Ranking by Revenue
+
+Purpose: identify products driving the highest sales volume.
+
+---
+
+## Most Profitable Products
+
+* Total Profit per Product
+* Product Profit Ranking
+
+Purpose: determine products generating the highest business profit.
+
+---
+
+## Low Performing Products
+
+* Revenue per Product
+* Profit per Product
+* Quantity Sold
+
+Purpose: detect products with weak sales and profitability.
+
+---
+
+## Negative Margin Products
+
+* Identify products where **Total Profit < 0**
+
+Purpose: detect products destroying business value.
+
+---
+
+## Category Revenue Contribution
+
+* Total Revenue by Category
+* Category Revenue Share %
+
+Purpose: identify categories driving business sales.
+
+---
+
+## Category Profit Contribution
+
+* Total Profit by Category
+* Category Profit Share %
+
+Purpose: determine categories generating real profitability.
+
+---
+
+## Product Profit Margin Analysis
+
+Formula:
+
+Profit Margin = Profit / Revenue
+
+Purpose:
+
+* Identify high-margin premium products
+* Identify low-margin volume products
+
+---
+
+## Pareto Product Analysis (80/20 Rule)
+
+* Rank products by revenue
+* Calculate cumulative revenue contribution
+
+Purpose:
+
+Determine whether **20% of products generate 80% of revenue**.
+
+---
+
 # Core Metrics Generated
 
 * Total Revenue
@@ -275,6 +377,8 @@ Purpose: build **behavior-based customer intelligence**.
 * Customer Lifetime Value
 * Customer Retention Metrics
 * Customer Behavioral Segmentation
+* Product Profit Margin
+* Pareto Revenue Contribution
 
 ---
 
@@ -290,6 +394,7 @@ Purpose: build **behavior-based customer intelligence**.
 * Comparative Benchmarking
 * Rolling Trend Evaluation
 * Behavioral Segmentation Models
+* Cumulative Distribution Analysis (Pareto)
 
 ---
 
@@ -301,10 +406,9 @@ Purpose: build **behavior-based customer intelligence**.
 * Regional revenue scale does not always correspond to profitability.
 * Segment growth rates vary significantly.
 * Revenue growth does not always produce proportional profit growth.
-* Monthly trend analysis reveals volatility and momentum shifts.
-* Revenue distribution analysis exposes dependency patterns.
 * Customer revenue contribution is concentrated among a smaller group of buyers.
-* Repeat purchase behavior strongly influences overall revenue generation.
+* A small percentage of products generate the majority of total revenue.
+* Certain products generate revenue but destroy profitability.
 
 ---
 
@@ -313,10 +417,9 @@ Purpose: build **behavior-based customer intelligence**.
 Next development layer will include:
 
 * Advanced Ranking Models
-* Margin Trend Over Time
 * Cross-Dimensional Analysis
-* Product Performance Analysis
-* Executive Dashboard Layer
+* Executive KPI Dashboard
+* BI Visualization Layer (Power BI / Tableau)
 
 ---
 
@@ -341,6 +444,7 @@ Run modules in order:
 1. module1_data_cleaning
 2. module2_sales_aggregate
 3. module3_customer_intelligence
+4. module4_product_performance
 
 ---
 
@@ -364,4 +468,6 @@ Run modules in order:
 
 * RFM Customer Segmentation — Completed
 
-Next Phase: **Product Performance Analysis**
+* Module 4 — Product Performance Intelligence — Completed
+
+Next Phase: **Dashboard Development**
