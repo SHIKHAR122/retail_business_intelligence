@@ -1,0 +1,348 @@
+-- ==================================================================================
+-- Module 4: Product Performance Intelligence
+-- Project: SQL Analytical Engine
+-- Description: Identify high-value products, underperforming products, and category-level contribution to business growth and profitability.
+-- Author: Shikhar Sharma
+-- ===================================================================================
+
+
+
+
+
+--=================================================================================================================================================================
+							--Best Selling Product
+						    --Goal - Determine The  Products generating the highest revenue.
+--=================================================================================================================================================================
+
+
+SELECT 
+     product_id,
+	 product_name,
+	 SUM(sales) AS total_sales_of_product,
+	 SUM(quantity) AS total_products_sold,
+	 DENSE_RANK()OVER (ORDER BY SUM(sales) DESC ) AS ranking  
+FROM superstore_clean
+GROUP BY product_name,product_id;
+
+
+
+--Insight :-Shows which products drive the majority of sales.
+
+
+
+
+
+
+
+
+
+
+
+--===========================================================================================================================================================================
+							--Most Profitable Products 
+						--Goal - To Determine Products generating maximum profit, not just revenue.
+--===========================================================================================================================================================================
+
+
+
+SELECT 
+     product_id,
+	 product_name,
+	 SUM(profit) AS total_profit_of_product,
+	 SUM(sales) AS total_sales_of_product,
+	 ROUND(SUM(profit)/SUM(sales),2) AS profit_margin,
+	 DENSE_RANK()OVER (ORDER BY SUM(profit) DESC ) AS ranking  
+FROM superstore_clean
+GROUP BY product_name,product_id;
+
+
+
+
+
+--Insight :-  Some products sell a lot but produce low profit margins.
+
+
+
+
+
+
+
+--===========================================================================================================================================================================
+							--Low Performing Products
+						--Goal - To Determine Products Generating Minimum Profit As Well A Sales
+--===========================================================================================================================================================================
+
+
+
+
+
+
+SELECT 
+     product_id,
+	 product_name,
+	 SUM(profit) AS total_profit_of_product,
+	 SUM(sales) AS total_sales_of_product,
+	 ROUND(SUM(profit)/SUM(sales),2) AS profit_margin,
+	 SUM(quantity) AS total_product_sold,
+	 ROW_NUMBER() OVER (ORDER BY SUM(profit) ASC, SUM(sales) ASC) AS low_performance_rank
+FROM superstore_clean
+GROUP BY product_name,product_id;
+
+
+
+
+
+
+	--Insight--
+--Candidates for:
+--Discount removal
+--Inventory reduction
+--Product discontinuation
+
+
+
+
+
+
+
+
+--===========================================================================================================================================================================
+							--Negative Margin Products						
+					--Goal - To Determine Products Generating Minimum Profit Margin 
+--===========================================================================================================================================================================
+
+
+
+
+SELECT 
+    product_id,
+    product_name,
+    SUM(profit) AS total_profit,
+    SUM(sales) AS total_sales,
+    ROUND(SUM(profit)/SUM(sales), 2) AS profit_margin
+FROM superstore_clean
+GROUP BY product_id, product_name
+HAVING ROUND(SUM(profit)/SUM(sales), 2) < 0;
+
+
+
+
+	--Insight--
+--These products destroy business value.
+--Most beginners never check this.
+--This instantly signals business awareness.
+
+
+
+
+
+
+--=================================================================================================================================================================================
+							--Category Contribution to Revenue
+						--Goal - Determine How Much each category contributes to total sales.
+
+--=================================================================================================================================================================================
+
+
+
+
+
+
+
+WITH category_metrics AS (
+    SELECT 
+        category,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY category
+),
+total_revenue AS (
+    SELECT SUM(total_sales) AS total_revenue
+    FROM category_metrics
+),
+contribution AS (
+    SELECT 
+        cm.category,
+        cm.total_sales,
+        ROUND((cm.total_sales * 100.0)/tr.total_revenue, 2) AS revenue_contribution
+    FROM category_metrics cm
+    CROSS JOIN total_revenue tr
+)
+SELECT
+    category,
+    total_sales,
+    revenue_contribution,
+    CASE 
+        WHEN revenue_contribution >= 35 THEN 'High Contribution'
+        WHEN revenue_contribution <= 25 THEN 'Low Contribution'
+        ELSE 'Average Contribution'
+    END AS contribution_level
+FROM contribution
+ORDER BY revenue_contribution DESC;
+
+
+
+
+
+
+	--Insight--
+--Shows which categories drive the business.
+
+
+
+
+
+
+
+
+
+
+
+--======================================================================================================================================================
+						--Profit Contribution by Category
+					--Goal - Determines Which categories produce actual profit, not just sales.
+
+--======================================================================================================================================================
+
+
+
+
+
+
+WITH category_metrics AS (
+    SELECT 
+        category,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit
+    FROM superstore_clean
+    GROUP BY category
+),
+total_profit AS (
+    SELECT SUM(total_profit) AS total_profit_all
+    FROM category_metrics
+),
+contribution AS (
+    SELECT 
+        cm.category,
+        cm.total_sales,
+        cm.total_profit,
+        ROUND((cm.total_profit * 100.0)/tp.total_profit_all, 2) AS profit_contribution
+    FROM category_metrics cm
+    CROSS JOIN total_profit tp
+)
+SELECT
+    category,
+    total_sales,
+    total_profit,
+    profit_contribution,
+    CASE 
+        WHEN profit_contribution >= 45 THEN 'High Contribution'
+        WHEN profit_contribution <= 20 THEN 'Low Contribution'
+        ELSE 'Average Contribution'
+    END AS contribution_level
+FROM contribution
+ORDER BY profit_contribution DESC;
+
+
+
+
+
+
+
+
+
+--===================================================================================================================================================================
+						--Product Profit Margin Analysis
+					--Goal - Determines The Profitability efficiency of each product.
+-=====================================================================================================================================================================
+
+
+
+
+
+
+WITH product_metrics AS (
+    SELECT
+        product_id,
+        product_name,
+        SUM(sales) AS total_sales,
+        SUM(profit) AS total_profit,
+        ROUND(SUM(profit)/SUM(sales), 2) AS profit_margin
+    FROM superstore_clean
+    GROUP BY product_id, product_name
+)
+SELECT
+    product_id,
+    product_name,
+    total_sales,
+    total_profit,
+    profit_margin,
+    DENSE_RANK() OVER (ORDER BY profit_margin DESC) AS margin_rank
+FROM product_metrics
+ORDER BY profit_margin DESC;
+
+
+
+
+
+
+
+
+
+
+--===================================================================================================================================================================
+						--  Pareto Analysis
+					--Goal - Determines Whether 20% of products generate 80% of revenue.
+-=====================================================================================================================================================================
+
+
+
+
+
+
+
+
+WITH product_revenue AS (
+    SELECT
+        product_id,
+        product_name,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY product_id, product_name
+),
+revenue_cumulative AS (
+    SELECT
+        product_id,
+        product_name,
+        total_sales,
+        SUM(total_sales) OVER (ORDER BY total_sales DESC) AS cumulative_sales,
+        SUM(total_sales) OVER () AS total_revenue
+    FROM product_revenue
+),
+pareto_analysis AS (
+    SELECT
+        product_id,
+        product_name,
+        total_sales,
+        cumulative_sales,
+        total_revenue,
+        ROUND((cumulative_sales * 100.0) / total_revenue, 2) AS cumulative_percentage,
+        CASE
+            WHEN ROUND((cumulative_sales * 100.0) / total_revenue, 2) <= 80 THEN 'Top 20% Products'
+            ELSE 'Remaining 80% Products'
+        END AS pareto_category
+    FROM revenue_cumulative
+)
+SELECT *
+FROM pareto_analysis
+ORDER BY cumulative_percentage;
+
+
+
+
+
+
+
+--===================================================================================================================================================================================
+
+

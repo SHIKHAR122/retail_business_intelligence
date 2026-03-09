@@ -1,0 +1,260 @@
+---
+# Module 4: Product Performance Intelligence
+
+---
+
+## 1. Objective
+
+This module focuses on evaluating product-level performance to identify high-value products, underperforming products, and category-level contributions to business growth and profitability.
+
+The goal is to transform transactional product data into actionable intelligence that supports inventory optimization, revenue maximization, and strategic decision-making.
+
+---
+
+## 2. Dataset Overview
+
+**Source Table:** `superstore_clean`
+
+### Key Columns Used
+
+* `product_name`
+* `category`
+* `sub_category`
+* `sales`
+* `profit`
+* `quantity`
+* `order_id`
+* `order_date`
+
+The dataset contains product-level transaction records used to analyze revenue, profit, sales volume, and product efficiency.
+
+---
+
+## 3. Best Selling Products
+
+### 3.1 Objective
+
+Identify products generating the highest revenue.
+
+### 3.2 Metrics Computed
+
+* Total Revenue per Product
+* Total Quantity Sold
+* Product Revenue Ranking
+
+### 3.3 Steps
+
+1. Group dataset by `product_name`
+2. Aggregate `Total Revenue` and `Total Quantity Sold`
+3. Rank products by revenue (descending)
+4. Identify Top N Products
+
+### 3.4 Analytical Purpose
+
+Reveals which products drive the majority of sales and provides context for inventory and marketing focus.
+
+---
+
+## 4. Most Profitable Products
+
+### 4.1 Objective
+
+Identify products generating maximum profit, highlighting true business drivers.
+
+### 4.2 Metrics Computed
+
+* Total Profit per Product
+* Total Revenue per Product
+* Product Profit Ranking
+
+### 4.3 Steps
+
+1. Group dataset by `product_name`
+2. Aggregate `Total Profit` and `Total Revenue`
+3. Rank products by profit (descending)
+
+### 4.4 Analytical Purpose
+
+Shows products that contribute most to profitability, not just revenue, helping separate volume-driven vs value-driven products.
+
+---
+
+## 5. Low Performing Products
+
+### 5.1 Objective
+
+Detect products with low sales **and** low profit.
+
+### 5.2 Metrics Computed
+
+* Revenue per Product
+* Profit per Product
+* Quantity Sold per Product
+
+### 5.3 Steps
+
+1. Group dataset by `product_name`
+2. Aggregate revenue, profit, and quantity
+3. Identify bottom percentile products
+
+### 5.4 Analytical Purpose
+
+Highlights candidates for:
+
+* Inventory reduction
+* Discount removal
+* Product discontinuation
+
+---
+
+## 6. Negative Margin Products
+
+### 6.1 Objective
+
+Detect products where total profit is negative.
+
+### 6.2 Metrics Computed
+
+* Total Profit per Product
+* Negative Profit Filter
+
+### 6.3 Steps
+
+1. Group dataset by `product_name`
+2. Aggregate total profit
+3. Filter products where profit < 0
+
+### 6.4 Analytical Purpose
+
+Reveals products that destroy business value. Signals analytical maturity in interviews.
+
+---
+
+## 7. Category Contribution to Revenue
+
+### 7.1 Objective
+
+Determine how much each category contributes to total sales.
+
+### 7.2 Metrics Computed
+
+* Total Revenue per Category
+* Revenue Contribution Percentage
+
+### 7.3 Steps
+
+1. Aggregate revenue by category
+2. Calculate percentage contribution relative to total business revenue
+
+### 7.4 Analytical Purpose
+
+Shows which categories drive the business and aids strategic prioritization.
+
+---
+
+## 8. Profit Contribution by Category
+
+### 8.1 Objective
+
+Identify which categories contribute actual profit, not just revenue.
+
+### 8.2 Metrics Computed
+
+* Total Profit per Category
+* Profit Contribution Percentage
+
+### 8.3 Steps
+
+1. Aggregate profit by category
+2. Compute percentage contribution
+
+### 8.4 Analytical Purpose
+
+Differentiates between high-volume and high-profit categories for strategic insights.
+
+---
+
+## 9. Product Profit Margin Analysis
+
+### 9.1 Objective
+
+Evaluate profitability efficiency of each product.
+
+### 9.2 Metrics Computed
+
+* Profit Margin per Product
+  **Formula:** Profit Margin = Total Profit ÷ Total Revenue
+
+### 9.3 Steps
+
+1. Group dataset by `product_name`
+2. Compute revenue and profit
+3. Calculate profit margin
+4. Rank products by margin
+
+### 9.4 Analytical Purpose
+
+* High margin products = premium products
+* Low margin products = volume-driven products
+* Supports product pricing, discounting, and prioritization decisions
+
+---
+
+## 10. Pareto Analysis (80/20 Rule)
+
+### 10.1 Objective
+
+Determine whether 20% of products generate 80% of revenue.
+
+### 10.2 Metrics Computed
+
+* Cumulative Revenue Contribution per Product
+
+### 10.3 Steps
+
+1. Rank products by revenue (descending)
+2. Calculate cumulative revenue contribution
+3. Identify products contributing to 80% of total revenue
+
+### 10.4 Analytical Purpose
+
+Highlights business dependency on a small set of products and informs inventory, marketing, and sales focus.
+
+---
+
+## 11. Analytical Techniques Applied
+
+* GROUP BY Aggregations
+* Window Functions (`DENSE_RANK`, `RANK`)
+* Conditional Logic (`CASE`)
+* Ratio Calculations (Revenue Contribution %, Profit Margin %)
+* Cumulative Sum Computation (Pareto Analysis)
+* Multi-Metric Product Ranking
+* Comparative Benchmarking
+
+---
+
+## 12. Business Insights Developed
+
+* Best-selling products do not always produce the highest profit.
+* Certain products generate losses despite revenue.
+* Product efficiency differs across categories.
+* Revenue contribution varies by category, separating volume vs value drivers.
+* Pareto principle often applies: few products drive majority of revenue.
+* Low-performing and negative-margin products can be targeted for operational optimization.
+
+---
+
+## 13. Module 4 Evolution
+
+Module 4 analytical progression:
+
+Best Selling Products
+→ Most Profitable Products
+→ Low Performing Products
+→ Negative Margin Products
+→ Category Revenue Contribution
+→ Category Profit Contribution
+→ Product Profit Margin Analysis
+→ Pareto Product Analysis (80/20 Rule)
+
