@@ -1,0 +1,476 @@
+-- ===========================================================================================================================================================
+-- Module 5: Time Series Trend Analysis 
+-- Project: SQL Analytical Engine
+-- Description: Analyze how business performance evolves over time, identify growth patterns, seasonality, anomalies, and long-term revenue momentum.
+-- Author: Shikhar Sharma
+-- ===========================================================================================================================================================
+
+
+
+
+
+
+
+--==============================================================================================================================================================
+								--Monthly Revenue Trend
+						Goal- Identify how revenue changes month-to-month and detect overall growth or decline patterns
+--==============================================================================================================================================================
+
+
+WITH monthly_revenue AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(sales) AS monthly_revenue
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+)
+
+SELECT *
+FROM monthly_revenue
+ORDER BY month;
+
+
+
+
+--Insight Generated  :- The Monthly Revenue Trend analysis reveals how the company’s revenue evolves over time, identifies seasonal demand patterns, and highlights periods of strong 
+			or weak business performance.
+
+
+
+
+
+
+
+
+
+
+
+
+--==============================================================================================================================================================
+								--Monthly Profit Trend
+						       Goal-Analyze how profit changes over time.
+--==============================================================================================================================================================
+
+
+
+WITH monthly_profit AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(profit) AS monthly_profit
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+)
+
+SELECT *
+FROM monthly_profit
+ORDER BY month;
+
+
+
+
+--Insight Generated :-  The Monthly Profit Trend analysis provides insight into how profitability changes over time, highlights periods of strong or weak financial performance, and helps 			assess whether revenue growth is translating into sustainable business profit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+--==============================================================================================================================================================
+								--Seasonal Sales Patterns
+						      -- Goal-Identify repeating demand cycles across months or quarters.
+--==============================================================================================================================================================
+
+
+
+
+WITH monthly_sales AS (
+    SELECT 
+        strftime('%m', order_date) AS month,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY strftime('%m', order_date)
+),
+
+sales_avg AS (
+    SELECT AVG(total_sales) AS avg_sales
+    FROM monthly_sales
+)
+
+SELECT 
+    m.month,
+    m.total_sales,
+    CASE 
+        WHEN m.total_sales > a.avg_sales * 1.10 THEN 'Peak Season'
+        WHEN m.total_sales < a.avg_sales * 0.90 THEN 'Low Season'
+        ELSE 'Normal Season'
+    END AS seasonal_category
+FROM monthly_sales m
+CROSS JOIN sales_avg a
+ORDER BY m.month;
+
+
+
+
+--Insight Generated :-   Seasonal sales analysis with benchmark classification identifies months that significantly outperform or underperform the average sales level, enabling businesses 			 to detect peak demand periods, low demand seasons, and stable sales periods for better inventory and marketing planning.
+
+
+
+
+
+
+
+
+
+
+
+--=======================================================================================================================================================================================
+									--Year-over-Year (YoY) Growth
+								--Goal- Compare performance between the same months in different years. 
+--=======================================================================================================================================================================================
+
+
+
+
+--Year Over Year Growth in Terms Of Sales 
+
+
+WITH yearly_sales AS (
+    SELECT 
+        strftime('%Y', order_date) AS year,
+        SUM(sales) AS total_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
+)
+
+SELECT 
+    year,
+    total_sales,
+    LAG(total_sales) OVER (ORDER BY year) AS previous_year_sales,
+    
+    ROUND(
+        (total_sales - LAG(total_sales) OVER (ORDER BY year)) * 100.0
+        / LAG(total_sales) OVER (ORDER BY year),
+        2
+    ) AS yoy_growth_percentage
+
+FROM yearly_sales
+ORDER BY year;
+
+
+
+
+
+--Year Over Year Growth in Terms Of Profit
+
+WITH yearly_profit AS (
+    SELECT 
+        strftime('%Y', order_date) AS year,
+        SUM(profit) AS annual_profit
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
+),
+profit_with_lag AS (
+    SELECT
+        year,
+        annual_profit,
+        LAG(annual_profit) OVER (ORDER BY year) AS previous_year_profit
+    FROM yearly_profit
+)
+SELECT
+    year,
+    annual_profit,
+    previous_year_profit,
+    ROUND(
+        (annual_profit - previous_year_profit) * 100.0 / previous_year_profit,
+        2
+    ) AS yoy_growth_percentage
+FROM profit_with_lag
+ORDER BY year;
+
+
+--Insight Generated - Year-over-Year growth analysis reveals how sales performance evolves across different years by comparing each year’s revenue with the previous year, enabling 			      businesses to measure true long-term growth while minimizing the impact of seasonal demand variations.
+
+
+
+--=======================================================================================================================================================================================
+ 									--Month-over-Month (MoM) Growth
+ 								      --Goal- Measure short-term momentum.
+--=======================================================================================================================================================================================
+
+
+
+
+
+--Month Over Month Growth in Terms Of Profit
+
+
+
+
+WITH monthly_profit AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(profit) AS monthly_profit
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+),
+
+profit_with_lag AS (
+    SELECT
+        month,
+        monthly_profit,
+        LAG(monthly_profit) OVER (ORDER BY month) AS previous_month_profit
+    FROM monthly_profit
+)
+
+SELECT
+    month,
+    monthly_profit,
+    previous_month_profit,
+    ROUND(
+        (monthly_profit - previous_month_profit) * 100.0
+        / previous_month_profit,
+        2
+    ) AS mom_growth_percentage
+FROM profit_with_lag
+ORDER BY month;
+
+
+
+
+
+
+--Month over Month Growth in Terms Of Sales
+
+
+
+WITH monthly_sales AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(sales) AS monthly_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+),
+
+sales_with_lag AS (
+    SELECT
+        month,
+        monthly_sales,
+        LAG(monthly_sales) OVER (ORDER BY month) AS previous_month_sales
+    FROM monthly_sales
+)
+
+SELECT
+    month,
+    monthly_sales,
+    previous_month_sales,
+    ROUND(
+        (monthly_sales - previous_month_sales) * 100.0
+        / previous_month_sales,
+        2
+    ) AS mom_growth_percentage
+FROM sales_with_lag
+ORDER BY month;
+
+
+
+
+
+
+--Insight Generated - Month-over-Month growth analysis reveals short-term fluctuations in revenue by comparing each month's performance with the previous month, helping businesses detect 		      rapid growth periods, declining demand, and the immediate impact of operational or marketing strategies.
+
+
+
+
+
+
+
+
+--=======================================================================================================================================================================================
+ 								    --Rolling Revenue Trends (Moving Average)
+ 						    --Goal- Smooth revenue fluctuations to observe underlying trend direction.
+--=======================================================================================================================================================================================
+
+
+
+
+
+
+WITH monthly_revenue AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(sales) AS monthly_revenue
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+)
+
+SELECT 
+    month,
+    monthly_revenue,
+    
+    ROUND(
+        AVG(monthly_revenue) OVER (
+            ORDER BY month
+            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+        ),
+        2
+    ) AS rolling_3_month_avg
+
+FROM monthly_revenue
+ORDER BY month;
+
+
+
+
+
+
+
+--Insight Generated :- Rolling revenue trend analysis reveals the underlying direction of business performance by smoothing short-term fluctuations in monthly revenue, enabling 			       organizations to identify consistent growth patterns, gradual declines, or stable long-term revenue trends more clearly.
+
+
+
+
+
+--=======================================================================================================================================================================================
+ 								    --Revenue Growth Over Time 
+ 						       --Goal- Measure the long-term accumulation of revenue.
+--=======================================================================================================================================================================================
+
+
+
+
+WITH monthly_revenue AS (
+    SELECT 
+        strftime('%Y', order_date) AS year,
+        strftime('%Y-%m', order_date) AS month,
+        SUM(sales) AS monthly_revenue
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+)
+
+SELECT 
+    year,
+    month,
+    monthly_revenue,
+
+    SUM(monthly_revenue) OVER (
+        PARTITION BY year
+        ORDER BY month
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_revenue
+
+FROM monthly_revenue
+ORDER BY year, month;
+
+
+
+--Insight Generated :- Revenue growth over time analysis reveals how revenue accumulates progressively within each year, enabling businesses to track the pace of revenue generation 			       throughout the year and identify periods of accelerated or slow growth within annual business cycles.
+
+
+
+
+
+
+
+
+--===================================================================================================================================================================================
+								   --Revenue Contribution by Year
+							--Goal- Identify which year contributed the most revenue.
+--===================================================================================================================================================================================
+
+
+
+
+
+WITH sales_per_year AS (
+    SELECT 
+        strftime('%Y', order_date) AS order_year,
+        SUM(sales) AS yearly_sales
+    FROM superstore_clean
+    GROUP BY strftime('%Y', order_date)
+),
+
+annual_sales AS (
+    SELECT 
+        SUM(yearly_sales) AS total_sales
+    FROM sales_per_year
+),
+
+revenue_contribution AS (
+    SELECT 
+        s.order_year,
+        s.yearly_sales,
+        a.total_sales,
+        ROUND((s.yearly_sales * 100.0) / a.total_sales, 2) AS revenue_percentage
+    FROM sales_per_year AS s
+    CROSS JOIN annual_sales AS a
+)
+
+SELECT *
+FROM revenue_contribution
+ORDER BY order_year;
+
+
+
+
+
+
+--Insight Generated :-  Revenue contribution by year analysis reveals the percentage share of total revenue generated in each year, helping businesses identify which years contributed the 			most to overall revenue and understand the distribution of financial performance across different years.
+
+
+
+
+
+
+
+
+
+--==========================================================================================================================================================================================
+								-- Sales Volatility / Anomaly Detection 
+						  --Goal - Detect months where sales deviated abnormally from the trend.
+--==========================================================================================================================================================================================
+
+
+
+WITH monthly_sales AS (
+    SELECT 
+        strftime('%Y-%m', order_date) AS month,
+        SUM(sales) AS monthly_revenue
+    FROM superstore_clean
+    GROUP BY strftime('%Y-%m', order_date)
+),
+
+avg_sales AS (
+    SELECT 
+        AVG(monthly_revenue) AS avg_monthly_revenue
+    FROM monthly_sales
+)
+
+SELECT 
+    m.month,
+    m.monthly_revenue,
+    a.avg_monthly_revenue,
+
+    CASE 
+        WHEN m.monthly_revenue > a.avg_monthly_revenue * 1.30 THEN 'Sales Spike'
+        WHEN m.monthly_revenue < a.avg_monthly_revenue * 0.70 THEN 'Sales Drop'
+        ELSE 'Normal Sales'
+    END AS sales_pattern
+
+FROM monthly_sales m
+CROSS JOIN avg_sales a
+ORDER BY m.month;
+
+
+
+
+
+--Insight Generated - Sales volatility analysis identifies months where revenue significantly deviates from the typical sales level, allowing businesses to detect abnormal spikes or drops 		      in demand and investigate the underlying causes such as promotions, seasonal effects, or operational disruptions.
+
+--==========================================================================================================================================================================================
