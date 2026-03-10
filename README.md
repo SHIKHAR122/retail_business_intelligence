@@ -12,11 +12,11 @@ The objective is to simulate real-world BI development through a staged analytic
 * Performance Benchmarking
 * Time-Series Evaluation
 * Revenue Contribution and Distribution Modeling
-* Ranking and Advanced Insight Analysis
 * Customer Behavioral Intelligence
 * Product Performance Intelligence
+* Advanced Analytical Insights
 
-All analysis is modular, documented, and designed to reflect practical BI workflows.
+All analysis is modular, documented, and designed to reflect practical BI workflows used in modern analytics environments.
 
 ---
 
@@ -102,7 +102,12 @@ Module 4: Product Performance Intelligence
         └── Pareto Product Analysis
         │
         ▼
-Advanced Insight Layer
+Module 5: Advanced Insight Layer
+        │
+        ├── Multi-Dimensional Ranking
+        ├── Profitability Efficiency Analysis
+        ├── Revenue Concentration Evaluation
+        └── Comparative Benchmarking
         │
         ▼
 Future Dashboard Layer
@@ -116,12 +121,12 @@ Future Dashboard Layer
 2. Revenue and Profit Aggregation
 3. Segment and Time-Based Growth Analysis
 4. Business Insight Extraction
-5. Monthly Trend Analysis (Completed)
-6. Revenue Contribution and Distribution Analysis (Completed)
-7. Ranking and Advanced Insight Analysis (In Progress)
-8. Customer Intelligence & Behavioral Analytics (Completed)
-9. Product Performance Intelligence (Completed)
-10. Dashboard Layer (Upcoming)
+5. Monthly Trend Analysis
+6. Revenue Contribution and Distribution Analysis
+7. Customer Intelligence & Behavioral Analytics
+8. Product Performance Intelligence
+9. Advanced Insight Layer
+10. Dashboard Layer (Future)
 
 ---
 
@@ -142,8 +147,6 @@ Tasks performed:
 
 This module develops core business performance intelligence.
 
----
-
 ## Category-Level Analysis
 
 * Total Sales by Category
@@ -154,8 +157,6 @@ This module develops core business performance intelligence.
 * Detection of High-Sales / Low-Margin Categories
 * Loss-Making Sub-Category Identification
 
----
-
 ## Regional Performance Analysis
 
 * Total Sales and Profit by Region
@@ -164,11 +165,7 @@ This module develops core business performance intelligence.
 * Sales vs Profit Divergence Detection
 * Regional Risk and Opportunity Classification
 
----
-
-## Segment-Level Performance and Growth Analysis (Completed)
-
-Time-based evaluation using order date.
+## Segment-Level Performance and Growth Analysis
 
 * Total Sales by Segment
 * Total Profit by Segment
@@ -184,11 +181,7 @@ Time-based evaluation using order date.
 * Multi-Year Growth Comparison
 * Compound Annual Growth Rate per Segment
 
----
-
-## Monthly Sales Summary (Completed)
-
-Time-series business intelligence.
+## Monthly Sales Summary
 
 * Monthly Sales Aggregation
 * Monthly Profit Aggregation
@@ -197,11 +190,7 @@ Time-series business intelligence.
 * Monthly Segment Performance
 * Revenue Momentum Tracking
 
----
-
-## Revenue Contribution and Distribution Analysis (Completed)
-
-Structural revenue distribution modeling.
+## Revenue Contribution and Distribution Analysis
 
 * Revenue Contribution Percentage by Month
 * Revenue Contribution by Segment
@@ -212,25 +201,11 @@ Structural revenue distribution modeling.
 
 ---
 
-## Ranking and Advanced Insight Analysis (In Progress)
-
-Building deeper comparative intelligence:
-
-* Multi-Dimensional Ranking (Segment × Region × Category)
-* Profitability Efficiency Ranking
-* Revenue vs Margin Divergence Analysis
-* Concentration Risk Evaluation
-* Comparative Benchmarking Models
-
----
-
 # Module 3: Customer Intelligence (`module3_customer_intelligence`)
 
 Focus: understanding **customer purchasing behavior and long-term value**.
 
----
-
-## Customer Lifetime Value (CLV) Analysis (Completed)
+## Customer Lifetime Value (CLV) Analysis
 
 Metrics calculated:
 
@@ -240,11 +215,7 @@ Metrics calculated:
 * Average Order Value
 * Estimated Customer Lifetime Value
 
-Purpose: identify **high-value customers** and revenue concentration.
-
----
-
-## Customer Retention & Repeat Purchase Analysis (Completed)
+## Customer Retention & Repeat Purchase Analysis
 
 * Total Orders per Customer
 * Repeat Purchase Detection
@@ -252,13 +223,7 @@ Purpose: identify **high-value customers** and revenue concentration.
 * Purchase Frequency
 * Retention Behavior Patterns
 
-Purpose: measure **customer loyalty and engagement**.
-
----
-
-## RFM Customer Segmentation (Completed)
-
-Customer segmentation using the **Recency–Frequency–Monetary model**.
+## RFM Customer Segmentation
 
 Metrics used:
 
@@ -274,92 +239,40 @@ Customer groups identified:
 * At Risk Customers
 * Dormant Customers
 
-Purpose: build **behavior-based customer intelligence**.
-
 ---
 
 # Module 4: Product Performance Intelligence (`module4_product_performance`)
 
-This module evaluates **product-level performance** to identify revenue drivers, profitability leaders, and operational inefficiencies.
+Evaluates **product-level business impact and profitability efficiency.**
+
+## Analyses Included
+
+* Best Selling Products
+* Most Profitable Products
+* Low Performing Products
+* Negative Margin Products
+* Category Revenue Contribution
+* Category Profit Contribution
+* Product Profit Margin Analysis
+* Pareto Product Analysis (80/20 Rule)
 
 ---
 
-## Best Selling Products
+# Module 5: Advanced Analytical Insights (`module5_advanced_insights`)
 
-* Total Revenue per Product
-* Total Quantity Sold
-* Product Ranking by Revenue
+This module introduces deeper analytical benchmarking techniques.
 
-Purpose: identify products driving the highest sales volume.
+## Key Analyses
 
----
-
-## Most Profitable Products
-
-* Total Profit per Product
-* Product Profit Ranking
-
-Purpose: determine products generating the highest business profit.
-
----
-
-## Low Performing Products
-
-* Revenue per Product
-* Profit per Product
-* Quantity Sold
-
-Purpose: detect products with weak sales and profitability.
-
----
-
-## Negative Margin Products
-
-* Identify products where **Total Profit < 0**
-
-Purpose: detect products destroying business value.
-
----
-
-## Category Revenue Contribution
-
-* Total Revenue by Category
-* Category Revenue Share %
-
-Purpose: identify categories driving business sales.
-
----
-
-## Category Profit Contribution
-
-* Total Profit by Category
-* Category Profit Share %
-
-Purpose: determine categories generating real profitability.
-
----
-
-## Product Profit Margin Analysis
-
-Formula:
-
-Profit Margin = Profit / Revenue
+* Multi-Dimensional Ranking Models
+* Profitability Efficiency Benchmarking
+* Revenue vs Margin Divergence Detection
+* Revenue Concentration Analysis
+* Comparative Business Performance Modeling
 
 Purpose:
 
-* Identify high-margin premium products
-* Identify low-margin volume products
-
----
-
-## Pareto Product Analysis (80/20 Rule)
-
-* Rank products by revenue
-* Calculate cumulative revenue contribution
-
-Purpose:
-
-Determine whether **20% of products generate 80% of revenue**.
+Develop **decision-support intelligence beyond simple aggregation**, replicating real-world analytical evaluation used in BI teams.
 
 ---
 
@@ -412,22 +325,37 @@ Determine whether **20% of products generate 80% of revenue**.
 
 ---
 
-# Upcoming Development Phase
-
-Next development layer will include:
-
-* Advanced Ranking Models
-* Cross-Dimensional Analysis
-* Executive KPI Dashboard
-* BI Visualization Layer (Power BI / Tableau)
-
----
-
 # Tools Used
 
 * SQL (SQLite)
 * Git
 * GitHub
+
+---
+
+# Next Evolution: **QueryForge**
+
+The next stage of this project is an upgraded analytics system called **QueryForge**.
+
+QueryForge will transform the current SQL-based BI project into a **full analytical query engine and interactive dashboard platform**.
+
+## Planned Technology Stack
+
+* **DuckDB** — Analytical database engine
+* **Python** — Core language with class-based architecture
+* **Pandas** — Data manipulation and transformation
+* **Streamlit** — Interactive analytics dashboard
+
+## Goal of QueryForge
+
+Build a system that allows:
+
+* Interactive query-driven analytics
+* Dynamic insight generation
+* Automated metric computation
+* Real-time business dashboards
+
+This upgrade converts the project from a **static SQL analysis repository** into a **complete analytics application.**
 
 ---
 
@@ -441,33 +369,26 @@ git clone https://github.com/SHIKHAR122/retail_business_intelligence.git
 
 Run modules in order:
 
-1. module1_data_cleaning
-2. module2_sales_aggregate
-3. module3_customer_intelligence
-4. module4_product_performance
+```
+module1_data_cleaning
+module2_sales_aggregate
+module3_customer_intelligence
+module4_product_performance
+module5_advanced_insights
+```
 
 ---
 
 # Project Status
 
-* Module 1 — Data Cleaning — Completed
+✅ Module 1 — Data Cleaning — Completed
 
-* Module 2 — Sales and Profit Analysis — Completed
+✅ Module 2 — Sales and Profit Analysis — Completed
 
-* Monthly Sales Summary — Completed
+✅ Module 3 — Customer Intelligence — Completed
 
-* Revenue Contribution Analysis — Completed
+✅ Module 4 — Product Performance Intelligence — Completed
 
-* Ranking & Advanced Insights — In Progress
+✅ Module 5 — Advanced Analytical Insights — Completed
 
-* Module 3 — Customer Intelligence — Completed
-
-* Customer Lifetime Value Analysis — Completed
-
-* Customer Retention Analysis — Completed
-
-* RFM Customer Segmentation — Completed
-
-* Module 4 — Product Performance Intelligence — Completed
-
-Next Phase: **Dashboard Development**
+🚀 Next Project: **QueryForge — Analytical Query Engine + Dashboard System**
